@@ -23,9 +23,10 @@ const FeedCard = (feed) => {
     }
 
   return (
-    <div className="card bg-base-100 w-96 shadow-sm">
+    <div className="card m-2 text-cyan-950  bg-amber-50 w-96 shadow-sm">
   <figure>
     <img
+    className='w-60 rounded-full  h-60'
       src={photoUrl||"https://fastly.picsum.photos/id/683/200/200.jpg?hmac=gsOZBaeY42qvlTQSCuucn40FRUEnTdDYKl9q-YMcZh4"}
       alt="xyz" />
   </figure>

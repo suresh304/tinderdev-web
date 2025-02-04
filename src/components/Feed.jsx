@@ -35,7 +35,7 @@ const Feed = () => {
         return <h1>OOPS No suggestions...</h1>
     }
     return (
-        <div>
+        <div className='flex '>
             {feed?.map((feed,i)=><FeedCard {...feed}/>)}
         </div>
     )

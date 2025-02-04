@@ -9,6 +9,7 @@ import { store } from './utils/appstore.js'
 import Feed from './components/Feed.jsx'
 import Connections from './components/Connections.jsx'
 import Requests from './components/Requests.jsx'
+import Chat from './components/Chat.jsx'
 
 function App() {
 
@@ -25,6 +26,7 @@ function App() {
         <Route path='/connections' element={<Connections/>}/>
         <Route path='/requests' element={<Requests/>}/>
         <Route path='/' element={<Requests/>}/>
+        <Route path='/chat/:targetUser/:firstName?/:lastName?' element={<Chat/>}/>
       </Route>
     </Routes>
     </BrowserRouter>
