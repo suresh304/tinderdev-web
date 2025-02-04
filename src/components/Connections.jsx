@@ -40,7 +40,7 @@ const Connections = () => {
             <h1 className='font-bold text-2xl my-4'>Connections</h1>
             {connections?.map((connection, i) => {
                 const { firstName, lastName, photourl, _id } = connection
-                return <div className="card bg-emerald-50 text-blue-900 my-4 w-96 shadow-sm ">
+                return <div className="card bg-emerald-50 text-blue-900 my-4  sm:h-[27%] lg:w-[40%] shadow-sm ">
                     <div className="card-body">
                         <div className='flex justify-between flex-row-reverse'>
 

@@ -71,7 +71,7 @@ const Chat = () => {
 
     return (
         <>
-            <div className='w-[50%] mx-auto bg-amber-50 overflow-hidden rounded-3xl h-[90vh] flex flex-col justify-between'>
+            <div className='w-full sm:w-[90%] lg:w-[60%] mx-auto bg-amber-50 overflow-hidden rounded-3xl h-[90vh] flex flex-col justify-between'>
                     <h1 className='text-2xl font-light font-serif text-cyan-50 text-blue-950 flex bg-blue-400  justify-center sticky '> {targetUserFirsttName} {targetUserLastName}</h1>
                 <div className='overflow-scroll' ref={chatContainerRef}>
 
