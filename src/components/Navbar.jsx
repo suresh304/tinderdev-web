@@ -25,7 +25,7 @@ const Navbar = () => {
   return (
     <div className="navbar bg-base-100 shadow-sm">
   <div className="flex-1">
-    <Link to="/" className="btn btn-ghost text-xl">DEVcha</Link>
+    <Link to="/" className="btn btn-ghost text-xl">DEVchaT</Link>
   </div>
   <div className="flex gap-2">
     {user&&<p className='my-auto mx-5'>Welcome <i>{user?.firstName}</i>..!</p>}
