@@ -1,24 +1,52 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to main branch
+
 jobs:
   deploy:
-    runs-on: ubuntu-latest  # or your preferred runner
+    runs-on: ubuntu-latest  # Specify the environment in which the job will run
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      # Step 1: Checkout the repository code
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
+      # Step 2: Set up Node.js (this step is only for local debugging in GitHub runner, but not in the AWS server)
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'  # or the version you're using
+          node-version: '18'  # Specify your node version here
 
+      # Step 3: Install dependencies (optional, only if your deploy.sh needs it)
       - name: Install dependencies
-        run: npm install  # Install your project's dependencies
+        run: npm install  # If you're deploying code that requires build steps, this might be necessary.
 
-      - name: Deploy to AWS
-        run: |
-          sudo chmod +x deploy.sh
-          ./deploy.sh
-        env:
-          AWS_SSH_KEY: ${{ secrets.AWS_SSH_KEY }}
-          AWS_HOST: ${{ secrets.AWS_HOST }}
-          AWS_USER: ${{ secrets.AWS_USER }}
+      # Step 4: Deploy to AWS server
+      - name: Deploy to AWS Server
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.AWS_HOST }}  # Your AWS public IP or domain
+          username: ${{ secrets.AWS_USER }}  # Default is "ubuntu" for AWS
+          key: ${{ secrets.AWS_SSH_KEY }}  # Private key stored in GitHub Secrets
+          script: |
+
+            # Ensure required dependencies are installed on the AWS server (optional based on your app's requirement)
+            sudo apt update
+            sudo apt install -y nodejs npm git
+
+            # Verify if node and npm are installed
+            node -v
+            npm -v
+
+            # Make the deploy.sh file executable
+            sudo chmod +x deploy.sh
+
+            # Run the deploy script
+            ./deploy.sh
+
+            # Optional: Add any cleanup or validation steps here
+
+
