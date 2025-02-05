@@ -20,7 +20,5 @@ jobs:
           username: ${{ secrets.AWS_USER }}  # Default is "ubuntu" for AWS
           key: ${{ secrets.AWS_SSH_KEY }}  # Private key stored in GitHub Secrets
           script: |
-            cd /home/ubuntu/tinderdev-web
-            git pull origin main
             chmod +x deploy.sh
             ./deploy.sh
