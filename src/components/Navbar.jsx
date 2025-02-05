@@ -36,19 +36,19 @@ const Navbar = () => {
             src={user?.photoUrl || "https://imgs.search.brave.com/PkO5RpPGZW5uyCYOyjukOXVIfLUcTUbfk5BcF3ZrgQk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzA3LzA4LzQ3Lzc1/LzM2MF9GXzcwODQ3/NzUwOF9ETmt6Uklz/TkZnaWJnQ0o2S29U/Z0pqalJaTkpENG1i/NC5qcGc"} />
         </div>
       </div>
-      <ul
+      {user&&<ul
         tabIndex={0}
         class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
         <li>
           <Link to ='/profile' className="justify-between">
             Profile
-            <span className="badge">New</span>
+            
           </Link>
         </li>
         <li><Link to='/connections'>Connections</Link></li>
         <li><Link to='/requests'>Requests</Link></li>
         <li><Link onClick={handleLogout}>Logout</Link></li>
-      </ul>
+      </ul>}
     </div>
   </div>
 </div> 
