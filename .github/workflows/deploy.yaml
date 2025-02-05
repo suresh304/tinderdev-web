@@ -1,0 +1,26 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main  # Trigger on push to main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to AWS Server
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.AWS_HOST }}  # Your AWS public IP or domain
+          username: ${{ secrets.AWS_USER }}  # Default is "ubuntu" for AWS
+          key: ${{ secrets.AWS_SSH_KEY }}  # Private key stored in GitHub Secrets
+          script: |
+            cd /home/ubuntu/tinderdev-web
+            git pull origin main
+            chmod +x deploy.sh
+            ./deploy.sh
