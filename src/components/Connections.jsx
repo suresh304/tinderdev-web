@@ -36,7 +36,7 @@ const Connections = () => {
     }
 
     return (
-        <div className='flex flex-col items-center'>
+        <div className='flex flex-col items-center overflow-scroll'>
             <h1 className='font-bold text-2xl my-4'>Connections</h1>
             {connections?.map((connection, i) => {
                 const { firstName, lastName, photourl, _id } = connection

@@ -22,7 +22,6 @@ const EditProfile = (user) => {
   const updateProfileHandler = async () => {
     try {
       const res = await axios.patch(`${BASE_URL}/profile/edit`, { firstName, lastName, age, photoUrl }, { withCredentials: true })
-      console.log("prof updation>>>>>>>>>>>>>>>>>", res)
       dispatch(addUser(res.data))
       setShowtoast(true)
       setTimeout(() => { setShowtoast(false) }, 3000)
@@ -37,8 +36,8 @@ const EditProfile = (user) => {
   return (
 
 
-    <div className='flex justify-center '>
-      <div className="card bg-base-200 w-96 shadow-sm  my-auto">
+    <div className='flex justify-center items-center mt-[7%]'>
+      <div className="card bg-base-200 w-96 h-[55vh] shadow-sm  my-auto">
         <div className="card-body items-center text-center">
           <h2 className="card-title">Edit Profile</h2>
           <label className="input validator my-2">

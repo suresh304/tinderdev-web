@@ -7,8 +7,8 @@ import { BASE_URL } from '../constants'
 
 const Login = () => {
 
-  const [email, setEmail] = useState('suresh@gmail.com')
-  const [password, setPassword] = useState('suresh')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [error, setError] = useState("")
@@ -40,7 +40,6 @@ const Login = () => {
         navigate('/')
         dispatch(addUser(res.data))
       } else if (!(res.status == 200 && isLogin)) {
-        console.log("signin>>>>mmmmmmmmmmmmm")
         navigate('/profile')
         dispatch(addUser(res.data.user))
       } else {
@@ -57,7 +56,7 @@ const Login = () => {
 
 
   return (
-    <div className="card bg-base-200 w-96 shadow-sm flex justify-center align-middle mx-auto my-auto">
+    <div className="card bg-base-200 w-96 shadow-lg flex justify-center  align-middle mx-auto mt-[10%]">
 
       <div className="card-body items-center text-center">
         <h2 className="card-title">{isLogin ? "Login" : "SignUp"}</h2>

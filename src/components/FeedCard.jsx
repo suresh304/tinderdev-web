@@ -23,7 +23,7 @@ const FeedCard = (feed) => {
     }
 
   return (
-    <div className="card m-2 text-cyan-950  bg-amber-50 w-96 shadow-sm">
+    <div className="card m-2 text-cyan-950  bg-amber-50 w-96 h-[55vh] shadow-sm">
   <figure>
     <img
     className='w-60 rounded-full  h-60'
