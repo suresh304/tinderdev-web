@@ -4,12 +4,14 @@ import { BASE_URL } from '../constants'
 import { useDispatch, useSelector } from 'react-redux'
 import { addConnections } from '../utils/connectionsSlice'
 import { store } from '../utils/appstore'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 const Connections = () => {
 
     const dispatch = useDispatch()
     const connections = useSelector((store) => store.connection)
+    const user = useSelector(store=>store.user)
+    const navigate = useNavigate()
     console.log("heeeeeeeeeeeeee", connections)
 
     const fetchConnections = async () => {
@@ -28,7 +30,9 @@ const Connections = () => {
 
 
     useEffect(() => {
+        if(user)
         fetchConnections()
+    else navigate('/login')
     }, [])
     if (!connections) return
     if (connections.length == 0) {

@@ -9,7 +9,7 @@ import { store } from '../utils/appstore'
 
 const Body = () => {
 
-  const dispactch = useDispatch()
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const user = useSelector(store=>store.user)
   const fetchProfile = async () => {
@@ -17,13 +17,12 @@ const Body = () => {
       const res = await axios.get(`${BASE_URL}/profile/view`, {
         withCredentials: true
       })
-      dispactch(addUser(res.data))
+      dispatch(addUser(res.data))
 
     } catch (error) {
       if(error.status==401){
         navigate('/login')
       }
-      console.log("error fetching the profile", error)
     }
   }
 

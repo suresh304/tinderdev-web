@@ -76,7 +76,7 @@ const Chat = () => {
                 <div className='overflow-scroll' ref={chatContainerRef}>
 
                     {chats?.map((chat, i) => {
-                        return <div className={chat?.senderId?._id == userId ? "chat chat-end" : "chat chat-start"}>
+                        return <div className={chat?.senderId?._id == userId ? "chat chat-end" : "chat chat-start"} key={i}>
                             <div className="chat-image avatar">
                                 <div className="w-10 rounded-full">
                                     <img

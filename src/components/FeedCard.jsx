@@ -23,7 +23,7 @@ const FeedCard = (feed) => {
     }
 
   return (
-    <div className="card m-2 text-cyan-950  bg-amber-50 w-96 h-[55vh] shadow-sm">
+    <div className="card m-2 text-cyan-950  bg-amber-50 w-96 h-[60vh] shadow-sm">
   <figure>
     <img
     className='w-60 rounded-full  h-60'
@@ -32,7 +32,7 @@ const FeedCard = (feed) => {
   </figure>
   <div className="card-body">
     <h2 className="card-title">{firstName} {lastName}</h2>
-    <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
+    <p>{about}</p>
     <div className="card-actions justify-between">
       <button className="btn btn-primary" onClick={()=>handleSendRequest('interested',_id)}>interested</button>
       <button className="btn btn-primary" onClick={()=>handleSendRequest('ignored',_id)}>ignored</button>

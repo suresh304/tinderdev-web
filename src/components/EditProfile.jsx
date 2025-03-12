@@ -14,14 +14,15 @@ const EditProfile = (user) => {
   const [age, setAge] = useState(user.age)
   const [gender, setGender] = useState()
   const [error, setError] = useState()
-  const [photoUrl, setPhotoUrl] = useState(user.photoUrl || 'NA')
+  const [photoUrl, setPhotoUrl] = useState(user.photoUrl || '')
+  const [about,setAbout] = useState("")
   const dispatch = useDispatch()
   const [showtoast, setShowtoast] = useState(false)
 
 
   const updateProfileHandler = async () => {
     try {
-      const res = await axios.patch(`${BASE_URL}/profile/edit`, { firstName, lastName, age, photoUrl }, { withCredentials: true })
+      const res = await axios.patch(`${BASE_URL}/profile/edit`, { firstName, lastName, age, photoUrl ,about}, { withCredentials: true })
       dispatch(addUser(res.data))
       setShowtoast(true)
       setTimeout(() => { setShowtoast(false) }, 3000)
@@ -36,8 +37,8 @@ const EditProfile = (user) => {
   return (
 
 
-    <div className='flex justify-center items-center mt-[7%]'>
-      <div className="card bg-base-200 w-96 h-[55vh] shadow-sm  my-auto">
+    <div className='flex justify-center items-center mt-[7%] '>
+      <div className="card bg-base-200 w-96 h-[60vh] shadow-sm  my-auto ">
         <div className="card-body items-center text-center">
           <h2 className="card-title">Edit Profile</h2>
           <label className="input validator my-2">
@@ -78,6 +79,13 @@ const EditProfile = (user) => {
 
               placeholder="photoUrl" minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}" title="Must be more than 8 characters, including number, lowercase letter, uppercase letter" />
           </label>
+          <label class="input validator my-2">
+          <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle></g></svg>
+          <input type="input" required value={about}
+            onChange={(e) => setAbout(e.target.value)}
+
+            placeholder="About" minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}" title="Must be more than 8 characters, including number, lowercase letter, uppercase letter" />
+        </label>
 
           {error && <p>{error}</p>}
           <button className="btn btn-outline btn-primary w-full" onClick={updateProfileHandler}>Update</button>
@@ -85,7 +93,7 @@ const EditProfile = (user) => {
         </div>
       </div>
 
-      <FeedCard {...{ age, firstName, lastName, gender, photoUrl }} />
+      <FeedCard {...{ age, firstName, lastName, gender, photoUrl,about }} />
       {showtoast && <Toast message={"Profile Updated successfully"} />}
     </div>
   )
