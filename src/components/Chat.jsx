@@ -7,15 +7,17 @@ import axios from 'axios'
 import { BASE_URL } from '../constants'
 
 const Chat = () => {
-    const { targetUser,firstName:targetUserFirsttName,lastName:targetUserLastName } = useParams()
+    const { targetUser, firstName: targetUserFirsttName, lastName: targetUserLastName } = useParams()
 
     const user = useSelector(store => store.user)
     const userId = user?._id
     const firstName = user?.firstName
     const [message, setMessage] = useState('')
     const [chats, setChats] = useState([])
+    const [isTyping, setIsTyping] = useState(false)
     const messagesEndRef = useRef(null);
-  const chatContainerRef = useRef(null);
+    const chatContainerRef = useRef(null);
+    let interval;
 
     const getChats = async (id) => {
         const data = await axios.get(`${BASE_URL}/chat/${targetUser}`, { withCredentials: true })
@@ -32,6 +34,16 @@ const Chat = () => {
         socket.on('messagerecieved', ({ senderId, recieverId, text }) => {
             console.log({ senderId, recieverId, text })
             setChats((prev) => [...prev, { senderId, recieverId, text }])
+            setIsTyping(false)
+
+        })
+        socket.on('typingStatusRecieved', (data, senderId, recieverId) => {
+            console.log("typing status>>>>>>>>>>>>>>>>>>>>", data)
+            if (data.recieverId == userId) {
+                clearTimeout(interval)
+                setIsTyping(true)
+                interval = setTimeout(() => setIsTyping(false), 2000)
+            }
 
         })
 
@@ -54,9 +66,12 @@ const Chat = () => {
         console.log("triggered..............>")
         const chatDiv = chatContainerRef.current;
         // if (chatDiv && chatDiv.scrollHeight - chatDiv.scrollTop === chatDiv.clientHeight) {
-          messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
         // }
-      }, [chats]);
+
+
+        return ()=>clearTimeout(interval)
+    }, [chats,isTyping]);
 
 
 
@@ -67,12 +82,19 @@ const Chat = () => {
         setMessage('')
     }
 
+    const typing = (e) => {
+        const socket = createSocketConnection()
+
+        socket.emit('typing', { data: { type: 'typing' }, userId, targetUser })
+        setMessage(e.target.value)
+    }
+
 
 
     return (
         <>
             <div className='w-full sm:w-[90%] lg:w-[60%] mx-auto bg-amber-50 overflow-hidden rounded-xl h-[90vh] flex flex-col justify-between'>
-                    <h1 className='text-2xl font-light font-serif text-cyan-50 text-blue-950 flex bg-blue-400  justify-center sticky '> {targetUserFirsttName} {targetUserLastName}</h1>
+                <h1 className='text-2xl font-light font-serif text-cyan-50 text-blue-950 flex bg-blue-400  justify-center sticky '> {targetUserFirsttName} {targetUserLastName}</h1>
                 <div className='overflow-scroll' ref={chatContainerRef}>
 
                     {chats?.map((chat, i) => {
@@ -85,25 +107,43 @@ const Chat = () => {
                                     /> </div>
                             </div>
                             <div className="chat-header">
-                                {chat.firstName}
                                 <time className="text-xs opacity-50 text-amber-800">12:45</time>
                             </div>
                             <div className="chat-bubble">
                                 {chat.text}
 
+
                             </div>
                             <div className="chat-footer text-amber-900 opacity-50">Delivered</div>
                         </div>
                     })}
+
+                    {isTyping && <div className="chat chat-start">
+                        <div className="chat-image avatar">
+                            <div className="w-10 rounded-full">
+                                <img
+                                    alt="Chat Profile"
+                                /> </div>
+                        </div>
+                        <div className="chat-header">
+                            <time className="text-xs opacity-50 text-amber-800">12:45</time>
+                        </div>
+                        <div className="chat-bubble">
+                            <marquee>typing..</marquee>
+                        </div>
+                    </div>}
+
                     <div ref={messagesEndRef} ></div>
-                    
+
 
                 </div>
                 <div className='flex justify-center items-center'>
                     <input
                         type="text"
                         value={message}
-                        onChange={(e) => setMessage(e.target.value)}
+                        // onChange={(e) => {setMessage(e.target.value)}}
+                        onChange={(e) => typing(e)}
+                        onKeyDown={(e) => e.key == "Enter" && sendMessage()}
                         placeholder="Type here"
                         class="input input-bordered input-primary w-[70%] my-2" />
                     <button className="btn btn-info" onClick={() => sendMessage()}>Chat</button>

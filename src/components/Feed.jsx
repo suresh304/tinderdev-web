@@ -35,9 +35,11 @@ const Feed = () => {
         return <h1>OOPS No suggestions...</h1>
     }
     return (
-        <div className='flex justify-center max-w-full mt-[7%]'>
-            {/* {feed?.map((feed,i)=><FeedCard {...feed}/>)} */}
-            <FeedCard {...feed[0]}/>
+        <div className='flex  max-w-full mt-[7%] overflow-x-scroll'>
+            {feed?.map((feed,i)=><FeedCard {...feed}/>)}
+            
+
+            {/* <FeedCard {...feed[0]}/> */}
         </div>
     )
 }
