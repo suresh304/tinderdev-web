@@ -28,7 +28,9 @@ const Navbar = () => {
   <div className="flex-1">
     <Link to="/" className="btn btn-ghost text-xl">Hello-DEV</Link>
   </div>
-  <div className="flex gap-2">
+  <div className="flex gap-2 items-center">
+  <Link to='/connections' className='bg-blue-500 text-amber-100 p-1.5 rounded-2xl'>Connections</Link>
+  <Link to='/requests' className='bg-blue-500 text-amber-100 p-1.5 rounded-2xl'>Requests</Link>
     {user&&<p className='my-auto mx-5'>Welcome <i>{user?.firstName}</i>..!</p>}
     <div className="dropdown dropdown-end">
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar" onClick={() => setIsOpen(!isOpen)}>

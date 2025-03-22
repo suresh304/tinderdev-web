@@ -23,10 +23,11 @@ function App() {
         <Route path='/login' element={<Login/>}/>
         <Route path='/profile' element={<Profile/>}/>
         <Route path='/' element={<Feed/>}/>
-        <Route path='/connections' element={<Connections/>}/>
         <Route path='/requests' element={<Requests/>}/>
         <Route path='/' element={<Requests/>}/>
-        <Route path='/chat/:targetUser/:firstName?/:lastName?' element={<Chat/>}/>
+        <Route path='/connections' element={<Connections/>}>
+        <Route path='connections/chat/:targetUser/:firstName?/:lastName?' element={<Chat/>}/>
+        </Route>
       </Route>
     </Routes>
     </BrowserRouter>

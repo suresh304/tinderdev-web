@@ -93,8 +93,8 @@ const Chat = () => {
 
     return (
         <>
-            <div className='w-full sm:w-[90%] lg:w-[60%] mx-auto bg-amber-50 overflow-hidden rounded-xl h-[90vh] flex flex-col justify-between'>
-                <h1 className='text-2xl font-light font-serif text-cyan-50 text-blue-950 flex bg-blue-400  justify-center sticky '> {targetUserFirsttName} {targetUserLastName}</h1>
+            <div className='w-full   bg-amber-50 overflow-hidden  h-[90vh] flex flex-col justify-between p-1.5'>
+                <h1 className='text-2xl font-light font-serif text-cyan-50 flex bg-blue-400  justify-center sticky '> {targetUserFirsttName} {targetUserLastName}</h1>
                 <div className='overflow-scroll' ref={chatContainerRef}>
 
                     {chats?.map((chat, i) => {
@@ -129,7 +129,7 @@ const Chat = () => {
                             <time className="text-xs opacity-50 text-amber-800">12:45</time>
                         </div>
                         <div className="chat-bubble">
-                            <marquee>typing..</marquee>
+<marquee><span className="loading loading-dots loading-sm"></span></marquee>
                         </div>
                     </div>}
 

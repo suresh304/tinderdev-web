@@ -18,6 +18,7 @@ const Body = () => {
         withCredentials: true
       })
       dispatch(addUser(res.data))
+      navigate('/')
 
     } catch (error) {
       if(error.status==401){
@@ -27,6 +28,7 @@ const Body = () => {
   }
 
   useEffect(() => {
+    console.log("helllllllllllllllllllllllllllll")
     fetchProfile()
   }, [])
   return (
