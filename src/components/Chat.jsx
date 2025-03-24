@@ -15,6 +15,7 @@ const Chat = () => {
     const [message, setMessage] = useState('')
     const [chats, setChats] = useState([])
     const [isTyping, setIsTyping] = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
     const messagesEndRef = useRef(null);
     const chatContainerRef = useRef(null);
     let interval;
@@ -33,12 +34,12 @@ const Chat = () => {
 
         socket.on('messagerecieved', ({ senderId, recieverId, text }) => {
             console.log({ senderId, recieverId, text })
-            setChats((prev) => [...prev, { senderId, recieverId, text }])
+            if (userId == recieverId._id)
+                setChats((prev) => [...prev, { senderId, recieverId, text }])
             setIsTyping(false)
 
         })
         socket.on('typingStatusRecieved', (data, senderId, recieverId) => {
-            console.log("typing status>>>>>>>>>>>>>>>>>>>>", data)
             if (data.recieverId == userId) {
                 clearTimeout(interval)
                 setIsTyping(true)
@@ -70,8 +71,8 @@ const Chat = () => {
         // }
 
 
-        return ()=>clearTimeout(interval)
-    }, [chats,isTyping]);
+        return () => clearTimeout(interval)
+    }, [chats, isTyping]);
 
 
 
@@ -79,6 +80,8 @@ const Chat = () => {
         const socket = createSocketConnection()
 
         socket.emit('sendmessage', { firstName, userId, targetUser, message })
+        setChats((prev) => [...prev, { senderId: { firstName: "", lastName: "", photoUrl: "", _id: userId }, recieverId: { firstName: "", lastName: "", photoUrl: "", _id: targetUser }, text: message }])
+
         setMessage('')
     }
 
@@ -93,13 +96,18 @@ const Chat = () => {
 
     return (
         <>
-            <div className='w-full   bg-amber-50 overflow-hidden  h-[90vh] flex flex-col justify-between p-1.5'>
-                <h1 className='text-2xl font-light font-serif text-cyan-50 flex bg-blue-400  justify-center sticky '> {targetUserFirsttName} {targetUserLastName}</h1>
+            <div className='w-full   bg-amber-50 overflow-hidden  h-[90vh] flex flex-col justify-between'>
+                <div className='w-full h-16 bg-blue-500 flex justify-between'>
+                    <div>{targetUserFirsttName} {targetUserLastName}</div>
+
+                    
+                </div>
                 <div className='overflow-scroll' ref={chatContainerRef}>
+                    {console.log(chats)}
 
                     {chats?.map((chat, i) => {
                         return <div className={chat?.senderId?._id == userId ? "chat chat-end" : "chat chat-start"} key={i}>
-                            <div className="chat-image avatar">
+                            <div className="chat-image avatar pl-5">
                                 <div className="w-10 rounded-full">
                                     <img
                                         alt="Chat Profile"
@@ -129,7 +137,7 @@ const Chat = () => {
                             <time className="text-xs opacity-50 text-amber-800">12:45</time>
                         </div>
                         <div className="chat-bubble">
-<marquee><span className="loading loading-dots loading-sm"></span></marquee>
+                            <span className="loading loading-dots loading-sm"></span>
                         </div>
                     </div>}
 

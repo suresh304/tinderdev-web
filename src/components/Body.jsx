@@ -32,7 +32,7 @@ const Body = () => {
     fetchProfile()
   }, [])
   return (
-    <div className=" relative bg-[url('./assets/coffee-break-6665746.png')] bg-cover bg-center bg-fixed h-screen h-full w-full overflow-scroll  ">
+    <div className=" relative bg-[url('./assets/coffee-break-6665746.png')] bg-cover bg-center bg-fixed h-screen w-full overflow-scroll  ">
 
       <Navbar />
       <Outlet />
