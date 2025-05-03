@@ -26,7 +26,7 @@ const Navbar = () => {
   return (
     <div className="navbar bg-amber-100  text-blue-700 shadow-sm">
   <div className="flex-1">
-    <Link to="/" className="btn btn-ghost text-xl">Lets Connect👋</Link>
+    <Link to="/" className="btn btn-ghost text-xl">Lets Connect!👋</Link>
   </div>
   <div className="flex gap-2 items-center">
   <Link to='/connections' className='bg-blue-500 text-amber-100 p-1.5 rounded-2xl'>Connections</Link>
