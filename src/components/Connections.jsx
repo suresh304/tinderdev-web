@@ -43,7 +43,7 @@ const Connections = () => {
 
             <Outlet/>
             </div>
-        <div className='flex flex-1  bg-blue-400 text-amber-900 flex-col items-center overflow-scroll'>
+        <div className='flex flex-1  bg-blue-500 text-amber-100 flex-col items-center overflow-scroll'>
             <h1 className='font-bold text-2xl my-4 text-amber-100'>Connections</h1>
             <ul className="list rounded-box shadow-md w-full">
             {connections?.map((connection, i) => {
@@ -52,7 +52,7 @@ const Connections = () => {
                 <li className="list-row   text hover:bg-amber-200 hover:text-blue-700">
                 <div><img className="size-10 rounded-box" src={photoUrl||"https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png"} alt='profile'/></div>
                 <div>
-                  <div className=' text-1xl'>{firstName+" "+lastName}</div>
+                  <div className='  font-bold '>{firstName.toUpperCase()+" "+lastName}</div>
                   <div className="text-xs uppercase font-semibold opacity-60">Remaining Reason</div>
                 </div>
                 {/* <button className="btn btn-square btn-ghost">

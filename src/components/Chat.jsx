@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { use } from 'react'
 import axios from 'axios'
 import { BASE_URL } from '../constants'
+import { formatTime } from '../utils/helpers'
 
 const Chat = () => {
     const { targetUser, firstName: targetUserFirsttName, lastName: targetUserLastName } = useParams()
@@ -22,7 +23,7 @@ const Chat = () => {
 
     const getChats = async (id) => {
         const data = await axios.get(`${BASE_URL}/chat/${targetUser}`, { withCredentials: true })
-        console.log("this is data...>>>", data)
+        console.log("this is data...>>>", data.data.messages)
         setChats(data.data.messages)
     }
 
@@ -32,10 +33,11 @@ const Chat = () => {
 
         socket.emit('joinchat', { userId, firstName, targetUser })
 
-        socket.on('messagerecieved', ({ senderId, recieverId, text }) => {
-            console.log({ senderId, recieverId, text })
+        socket.on('messagerecieved', ({ senderId, recieverId, text,createdAt }) => {
+
             if (userId == recieverId._id)
-                setChats((prev) => [...prev, { senderId, recieverId, text }])
+                setChats((prev) => [...prev, { senderId, recieverId, text,createdAt }])
+            console.log("this is chats>>>>>>>>>>>>>",chats)
             setIsTyping(false)
 
         })
@@ -80,7 +82,7 @@ const Chat = () => {
         const socket = createSocketConnection()
 
         socket.emit('sendmessage', { firstName, userId, targetUser, message })
-        setChats((prev) => [...prev, { senderId: { firstName: "", lastName: "", photoUrl: "", _id: userId }, recieverId: { firstName: "", lastName: "", photoUrl: "", _id: targetUser }, text: message }])
+        setChats((prev)=>[...prev, { senderId: { firstName: "", lastName: "", photoUrl: "", _id: userId }, recieverId: { firstName: "", lastName: "", photoUrl: "", _id: targetUser },createdAt:new Date().toISOString(), text: message }])
 
         setMessage('')
     }
@@ -103,7 +105,7 @@ const Chat = () => {
                     
                 </div>
                 <div className='overflow-scroll' ref={chatContainerRef}>
-                    {console.log(chats)}
+                    {console.log("display>>>>>>>",chats)}
 
                     {chats?.map((chat, i) => {
                         return <div className={chat?.senderId?._id == userId ? "chat chat-end" : "chat chat-start"} key={i}>
@@ -115,7 +117,7 @@ const Chat = () => {
                                     /> </div>
                             </div>
                             <div className="chat-header">
-                                <time className="text-xs opacity-50 text-amber-800">12:45</time>
+                                <time className="text-xs opacity-50 text-blue-700 font-bold">{formatTime(chat.createdAt)}</time>
                             </div>
                             <div className="chat-bubble">
                                 {chat.text}

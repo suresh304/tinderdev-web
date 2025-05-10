@@ -5,7 +5,7 @@ import { removeFeed } from '../utils/feedSlice'
 import { useDispatch } from 'react-redux'
 
 const FeedCard = (feed) => {
-    console.log("carduse>>>>>>>>>>>>>>",feed)
+    console.log("carduse>>>>>>>>>>>>>>fee",feed)
     const dispatch = useDispatch()
     const {age,firstName,lastName,gender,photoUrl,about,_id} = feed
 
