@@ -1,52 +1,32 @@
-name: Deploy to AWS
+name: Deploy Frontend to Azure VM
 
 on:
   push:
     branches:
-      - main  # Trigger on push to main branch
+      - main  # Adjust if you want to deploy from a different branch
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest  # Specify the environment in which the job will run
+    runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout the repository code
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js (this step is only for local debugging in GitHub runner, but not in the AWS server)
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18'  # Specify your node version here
-
-      # Step 3: Install dependencies (optional, only if your deploy.sh needs it)
-      - name: Install dependencies
-        run: npm install  # If you're deploying code that requires build steps, this might be necessary.
-
-      # Step 4: Deploy to AWS server
-      - name: Deploy to AWS Server
+      - name: Deploy to Azure VM via SSH
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.AWS_HOST }}  # Your AWS public IP or domain
-          username: ${{ secrets.AWS_USER }}  # Default is "ubuntu" for AWS
-          key: ${{ secrets.AWS_SSH_KEY }}  # Private key stored in GitHub Secrets
+          host: ${{ secrets.AZURE_HOST }}
+          username: ${{ secrets.AZURE_USER }}
+          key: ${{ secrets.AZURE_SSH_KEY }}
           script: |
+            cd /home/azureuser
+            chmod +x deploy-frontend.sh
+            ./deploy-frontend.sh
 
-            # Ensure required dependencies are installed on the AWS server (optional based on your app's requirement)
-            sudo apt update
-            sudo apt install -y nodejs npm git
-
-            # Verify if node and npm are installed
-            node -v
-            npm -v
-
-            # Make the deploy.sh file executable
-            sudo chmod +x deploy.sh
-
-            # Run the deploy script
-            ./deploy.sh
-
-            # Optional: Add any cleanup or validation steps here
-
-
+      - name: Send Telegram notification
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.CHAT_ID }} \
+            -d text="✅ Heyy SURESH Frontend deployment to Azure VM completed successfully from *main* branch!" \
+            -d parse_mode=Markdown
