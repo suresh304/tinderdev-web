@@ -15,6 +15,8 @@ function App() {
 
   return (
     <>
+      <input type="checkbox" id="my_modal_7" className="modal-toggle" />
+
     <Provider store={store}>
 
     <BrowserRouter basename='/'>
