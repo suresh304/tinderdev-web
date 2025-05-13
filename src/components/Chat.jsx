@@ -51,8 +51,16 @@ const Chat = () => {
 
         })
 
-        socket.on('messageDeleted', (data, senderId, recieverId) => {
-            console.log("message deleted>>>>>>>>>>")
+        socket.on('messageUpdated', (filteredMessages) => {
+            console.log("message deleted filtered>>>>>>>>>>", filteredMessages)
+
+            setChats(filteredMessages)
+            setModal({
+                ...modal,
+                isopen: false,
+
+            })
+
 
         })
 
@@ -102,29 +110,29 @@ const Chat = () => {
 
 
 
-    const deleteMessage = async (id) => {
-    console.log("This is the ID to be deleted:", id);
-    const socket = createSocketConnection()
-    try {
-        const res = await axios.post(
-            `${BASE_URL}/chat/${targetUser}/${id}`,
-            { del_for_both: true },
-            { withCredentials: true }
-        );
+    const deleteMessage = async (msgId) => {
+        console.log("This is the ID to be deleted:", msgId);
+        const socket = createSocketConnection()
+        try {
+            // const res = await axios.post(
+            //     `${BASE_URL}/chat/${targetUser}/${id}`,
+            //     { del_for_both: true },
+            //     { withCredentials: true }
+            // );
 
 
-   socket.emit('deleteMessage', { data: { type: 'typing' }, userId, targetUser })
+            socket.emit('deletingMessage', { msgId, userId, targetUser })
 
-        console.log(res.status)
-        if(res.status = 200){
-          setModal({ ...modal, isopen: false })  
+            // console.log(res.status)
+            // if(res.status = 200){
+            //   setModal({ ...modal, isopen: false })  
+            // }
+
+            // console.log("Delete response >>>>>>>>", res.data);
+        } catch (error) {
+            console.error("This is the error >>>>>>>>>>>>>>>", error.response?.data || error.message);
         }
-
-        console.log("Delete response >>>>>>>>", res.data);
-    } catch (error) {
-        console.error("This is the error >>>>>>>>>>>>>>>", error.response?.data || error.message);
-    }
-};
+    };
 
 
 
@@ -165,7 +173,7 @@ const Chat = () => {
                             }>
 
                                 {chat.text}
-                                {chat._id}
+                                
 
 
                             </div>
