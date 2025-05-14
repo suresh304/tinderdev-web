@@ -35,7 +35,7 @@ const Chat = () => {
         socket.emit('joinchat', { userId, firstName, targetUser })
 
         socket.on('messagerecieved', ({ senderId, recieverId, text, createdAt }) => {
-
+console.log('on messae recieved')
             if (userId == recieverId._id)
                 setChats((prev) => [...prev, { senderId, recieverId, text, createdAt }])
             console.log("this is chats>>>>>>>>>>>>>", chats)
@@ -112,30 +112,23 @@ const Chat = () => {
 
     const deleteMessage = async (msgId) => {
         console.log("This is the ID to be deleted:", msgId);
+        if (!msgId) {
+           setChats(prevChats => prevChats.slice(0, -1));
+            setModal({
+                ...modal,
+                isopen: false,
+
+            })
+
+        }
         const socket = createSocketConnection()
         try {
-            // const res = await axios.post(
-            //     `${BASE_URL}/chat/${targetUser}/${id}`,
-            //     { del_for_both: true },
-            //     { withCredentials: true }
-            // );
-
-
             socket.emit('deletingMessage', { msgId, userId, targetUser })
 
-            // console.log(res.status)
-            // if(res.status = 200){
-            //   setModal({ ...modal, isopen: false })  
-            // }
-
-            // console.log("Delete response >>>>>>>>", res.data);
         } catch (error) {
             console.error("This is the error >>>>>>>>>>>>>>>", error.response?.data || error.message);
         }
     };
-
-
-
 
     return (
         <>
@@ -173,7 +166,7 @@ const Chat = () => {
                             }>
 
                                 {chat.text}
-                                
+
 
 
                             </div>
