@@ -5,20 +5,16 @@ import { removeFeed } from '../utils/feedSlice'
 import { useDispatch } from 'react-redux'
 
 const FeedCard = (feed) => {
-    console.log("carduse>>>>>>>>>>>>>>fee",feed)
     const dispatch = useDispatch()
     const {age,firstName,lastName,gender,photoUrl,about,_id} = feed
 
     const handleSendRequest = async (status,userId)=>{
-      console.log({status,userId})
       try {
        const res =  await axios.post(`${BASE_URL}/request/send/${status}/${userId}`,{},{withCredentials:true})
   
   
        dispatch(removeFeed(userId))
-       console.log("const request send response response>>>>>>>>>>>>",res)
       } catch (error) {
-        console.log('error while send  request',error)
       }
     }
 

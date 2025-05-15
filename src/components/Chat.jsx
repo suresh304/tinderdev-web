@@ -13,6 +13,7 @@ const Chat = () => {
 
     const user = useSelector(store => store.user)
     const userId = user?._id
+    const userPhoto = user?.photoUrl
     const firstName = user?.firstName
     const [message, setMessage] = useState('')
     const [chats, setChats] = useState([])
@@ -20,12 +21,13 @@ const Chat = () => {
     const [modal, setModal] = useState({ isopen: false, data: {} })
     const messagesEndRef = useRef(null);
     const chatContainerRef = useRef(null);
+    const [idsToBeDeleted,setIdsToBeDeleted] = useState([])
     let interval;
 
     const getChats = async (id) => {
         const data = await axios.get(`${BASE_URL}/chat/${targetUser}`, { withCredentials: true })
-        console.log("this is data...>>>", data.data.messages)
         setChats(data.data.messages)
+        setIdsToBeDeleted([])
     }
 
     useEffect(() => {
@@ -34,11 +36,11 @@ const Chat = () => {
 
         socket.emit('joinchat', { userId, firstName, targetUser })
 
-        socket.on('messagerecieved', ({ senderId, recieverId, text, createdAt }) => {
-console.log('on messae recieved')
+        socket.on('messagerecieved', ({ senderId, recieverId, text, createdAt ,deletedBy,_id}) => {
             if (userId == recieverId._id)
                 setChats((prev) => [...prev, { senderId, recieverId, text, createdAt }])
-            console.log("this is chats>>>>>>>>>>>>>", chats)
+            idsToBeDeleted.push(_id)
+            setIdsToBeDeleted(prev=>[...idsToBeDeleted,_id])
             setIsTyping(false)
 
         })
@@ -52,7 +54,6 @@ console.log('on messae recieved')
         })
 
         socket.on('messageUpdated', (filteredMessages) => {
-            console.log("message deleted filtered>>>>>>>>>>", filteredMessages)
 
             setChats(filteredMessages)
             setModal({
@@ -80,7 +81,6 @@ console.log('on messae recieved')
 
     useEffect(() => {
 
-        console.log("triggered..............>")
         const chatDiv = chatContainerRef.current;
         // if (chatDiv && chatDiv.scrollHeight - chatDiv.scrollTop === chatDiv.clientHeight) {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -88,7 +88,7 @@ console.log('on messae recieved')
 
 
         return () => clearTimeout(interval)
-    }, [chats, isTyping]);
+    }, [chats, isTyping,idsToBeDeleted]);
 
 
 
@@ -96,7 +96,7 @@ console.log('on messae recieved')
         const socket = createSocketConnection()
 
         socket.emit('sendmessage', { firstName, userId, targetUser, message })
-        setChats((prev) => [...prev, { senderId: { firstName: "", lastName: "", photoUrl: "", _id: userId }, recieverId: { firstName: "", lastName: "", photoUrl: "", _id: targetUser }, createdAt: new Date().toISOString(), text: message }])
+        setChats((prev) => [...prev, { senderId: { firstName: "", lastName: "", photoUrl: userPhoto, _id: userId }, recieverId: { firstName: "", lastName: "", photoUrl: "", _id: targetUser }, createdAt: new Date().toISOString(), text: message }])
 
         setMessage('')
     }
@@ -111,7 +111,6 @@ console.log('on messae recieved')
 
 
     const deleteMessage = async (msgId) => {
-        console.log("This is the ID to be deleted:", msgId);
         if (!msgId) {
            setChats(prevChats => prevChats.slice(0, -1));
             setModal({
@@ -123,6 +122,12 @@ console.log('on messae recieved')
         }
         const socket = createSocketConnection()
         try {
+
+            if(!msgId&&idsToBeDeleted.length){
+            socket.emit('deletingMessage', { msgId:idsToBeDeleted[idsToBeDeleted.length-1], userId, targetUser })
+            setIdsToBeDeleted(prev=>prev.slice(0,-1))      
+            return
+            }
             socket.emit('deletingMessage', { msgId, userId, targetUser })
 
         } catch (error) {
@@ -132,7 +137,7 @@ console.log('on messae recieved')
 
     return (
         <>
-            {modal.isopen && <Modal Yes={() => deleteMessage(modal.data.id)} No={() => { }} onClose={() => setModal({ ...modal, isopen: false })} />}
+            {modal.isopen && <Modal Yes={() => deleteMessage(modal.data.id)} No={ () => setModal({ ...modal, isopen: false })} onClose={() => setModal({ ...modal, isopen: false })} />}
             <div className='w-full   bg-amber-50 overflow-hidden  h-[90vh] flex flex-col justify-between'>
                 <div className='w-full h-16 bg-blue-500 flex justify-between'>
                     <div>{targetUserFirsttName} {targetUserLastName}</div>
@@ -140,7 +145,6 @@ console.log('on messae recieved')
 
                 </div>
                 <div className='overflow-scroll' ref={chatContainerRef}>
-                    {console.log("display>>>>>>>", chats)}
 
                     {chats?.map((chat, i) => {
                         return <div className={chat?.senderId?._id == userId ? "chat chat-end" : "chat chat-start"} key={i}>

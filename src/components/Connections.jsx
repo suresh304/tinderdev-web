@@ -15,7 +15,6 @@ const Connections = () => {
 
     const fetchConnections = async () => {
         try {
-            console.log("hello")
             const res = await axios.get(`${BASE_URL}/user/connections`, { withCredentials: true })
             dispatch(addConnections(res?.data?.data))
         } catch (error) {

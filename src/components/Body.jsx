@@ -28,7 +28,6 @@ const Body = () => {
   }
 
   useEffect(() => {
-    console.log("helllllllllllllllllllllllllllll")
     fetchProfile()
   }, [])
   return (

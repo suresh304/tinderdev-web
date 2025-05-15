@@ -12,7 +12,6 @@ const Feed = () => {
 
 
     const getFeed = async () => {
-        console.log("this is the feed>>>>>>>>>>>>> ",feed)
         if (feed) {
             return
         }
@@ -20,7 +19,6 @@ const Feed = () => {
         const res = await axios.get(`${BASE_URL}/feed`, {
             withCredentials: true
         })
-        console.log(res.data.data)
         dispactch(addFeed(res?.data?.data))
 
     }

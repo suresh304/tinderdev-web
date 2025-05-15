@@ -7,7 +7,6 @@ import { addUser } from '../utils/userSlice'
 import Toast from './Toast'
 
 const EditProfile = (user) => {
-  console.log("edit profile user>>>>>>>>>>>>>>>>>>>>>>", user)
   // const {firstName,lastName,age,photoUrl} = user
   const [firstName, setFirstName] = useState(user.firstName)
   const [lastName, setLastName] = useState(user.lastName)

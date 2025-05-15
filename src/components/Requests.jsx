@@ -12,13 +12,10 @@ const Requests = () => {
 
   const dispatch = useDispatch()
   const requests = useSelector((store) => store.request)
-  console.log("heeeeeeeeeeeeee", requests)
 
   const fetchrequests = async () => {
     try {
-      console.log("hello req")
       const res = await axios.get(`${BASE_URL}/user/request/received`, { withCredentials: true })
-      console.log(res?.data?.data)
       dispatch(addRequest(res?.data?.data))
     } catch (error) {
       console.log("error fetching the recieed reqests ", error)
@@ -28,13 +25,11 @@ const Requests = () => {
 
 //http://localhost:3001/request/review/accepted/6799db8676cc9da9db21f3a6
   const handleReviewRequest = async (status,reqId)=>{
-    console.log({status,reqId})
     try {
      const res =  await axios.post(`${BASE_URL}/request/review/${status}/${reqId}`,{},{withCredentials:true})
 
 
      dispatch(removeRequest(reqId))
-     console.log("const review response>>>>>>>>>>>>",res)
     } catch (error) {
       console.log('error while review request',error)
     }

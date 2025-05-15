@@ -35,7 +35,6 @@ const Login = () => {
         {
           withCredentials: true
         })
-      console.log("signin>>>>>>>>>>>>>>>>>>>>>>>", res, isLogin)
       if (res.status == 200 && isLogin) {
         navigate('/')
         dispatch(addUser(res.data))
