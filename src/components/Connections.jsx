@@ -3,14 +3,18 @@ import React, { useEffect } from 'react'
 import { BASE_URL } from '../constants'
 import { useDispatch, useSelector } from 'react-redux'
 import { addConnections } from '../utils/connectionsSlice'
+import { setTheme } from '../utils/themeSlice'
 import { store } from '../utils/appstore'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
+import '../index.css';
 
 const Connections = () => {
 
     const dispatch = useDispatch()
     const connections = useSelector((store) => store.connection)
     const user = useSelector(store=>store.user)
+    const theme = useSelector(store=>store.themes)
+    console.log("this is themes>>>>>>>>>>>>",theme)
     const navigate = useNavigate()
 
     const fetchConnections = async () => {
@@ -37,18 +41,18 @@ const Connections = () => {
     }
 
     return (
-        <div className='flex flex-row-reverse overflow-y-scroll  h-[90vh]'>
+        <div className='flex flex-row-reverse overflow-y-scroll '>
             <div className='flex flex-3'>
 
             <Outlet/>
             </div>
-        <div className='flex flex-1  bg-blue-500 text-amber-100 flex-col items-center overflow-scroll'>
-            <h1 className='font-bold text-2xl my-4 text-amber-100'>Connections</h1>
-            <ul className="list rounded-box shadow-md w-full">
+        <div className={`flex flex-1   flex-col items-center overflow-scroll `}>
+            {/* <h1 className='font-bold text-2xl my-4'>Connections</h1> */}
+            <ul className="list bg-base-100 rounded-box shadow-md w-full ">
             {connections?.map((connection, i) => {
                 const { firstName, lastName, photoUrl, _id } = connection
                 return <Link to={`connections/chat/${_id}/${firstName}/${lastName}`} className='mb-1'>
-                <li className="list-row   text hover:bg-amber-200 hover:text-blue-700">
+                <li className="list-row ">
                 <div><img className="size-10 rounded-box" src={photoUrl||"https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png"} alt='profile'/></div>
                 <div>
                   <div className='  font-bold '>{firstName.toUpperCase()+" "+lastName}</div>
@@ -62,6 +66,30 @@ const Connections = () => {
                 </Link>
             })}
 </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         </div>
         </div>
     )

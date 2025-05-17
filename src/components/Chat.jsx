@@ -22,6 +22,8 @@ const Chat = () => {
     const messagesEndRef = useRef(null);
     const chatContainerRef = useRef(null);
     const [idsToBeDeleted,setIdsToBeDeleted] = useState([])
+    const theme = useSelector(store=>store.themes)
+    console.log("hello theme",theme)
     let interval;
 
     const getChats = async (id) => {
@@ -138,8 +140,10 @@ const Chat = () => {
     return (
         <>
             {modal.isopen && <Modal Yes={() => deleteMessage(modal.data.id)} No={ () => setModal({ ...modal, isopen: false })} onClose={() => setModal({ ...modal, isopen: false })} />}
-            <div className='w-full   bg-amber-50 overflow-hidden  h-[90vh] flex flex-col justify-between'>
-                <div className='w-full h-16 bg-blue-500 flex justify-between'>
+            <div className="w-full   overflow-hidden  h-[90vh] flex flex-col justify-between  bg-cover bg-center bg-fixed"
+            style={{ backgroundImage: `url('/${theme}.webp')` }}
+            >
+                <div className='w-[25%] flex items-center justify-around rounded-b-lg p-1.5 bg-blue-300 mx-auto'>
                     <div>{targetUserFirsttName} {targetUserLastName}</div>
 
 
