@@ -140,8 +140,8 @@ const Chat = () => {
     return (
         <>
             {modal.isopen && <Modal Yes={() => deleteMessage(modal.data.id)} No={ () => setModal({ ...modal, isopen: false })} onClose={() => setModal({ ...modal, isopen: false })} />}
-            <div className="w-full   overflow-hidden  h-[90vh] flex flex-col justify-between  bg-cover bg-center bg-fixed"
-            style={{ backgroundImage: `url('/${theme}.webp')` }}
+            <div className="w-full   overflow-hidden  h-full flex flex-col justify-between  bg-cover bg-center bg-fixed"
+            style={{ backgroundImage: `url('/${theme}.png')` }}
             >
                 <div className='w-[25%] flex items-center justify-around rounded-b-lg p-1.5 bg-blue-300 mx-auto'>
                     <div>{targetUserFirsttName} {targetUserLastName}</div>

@@ -41,12 +41,12 @@ const Connections = () => {
     }
 
     return (
-        <div className='flex flex-row-reverse overflow-y-scroll '>
-            <div className='flex flex-3'>
+        <div className='flex flex-row-reverse  h-[90%] bg-amber-100'>
+            <div className='flex flex-3 overflow-y-scroll'>
 
             <Outlet/>
             </div>
-        <div className={`flex flex-1   flex-col items-center overflow-scroll `}>
+        <div className={`flex flex-1   flex-col items-center overflow-y-scroll `}>
             {/* <h1 className='font-bold text-2xl my-4'>Connections</h1> */}
             <ul className="list bg-base-100 rounded-box shadow-md w-full ">
             {connections?.map((connection, i) => {
