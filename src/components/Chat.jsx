@@ -51,7 +51,6 @@ const Chat = () => {
   });
 
   setUploadedUrl(res.data.fileUrl);
-  sendMessage(BASE_URL+res.data.fileUrl)
 
 };
 
@@ -200,9 +199,7 @@ const Chat = () => {
                                 })
                             }>
 
-                                {chat.text}
-
-
+                                {chat.text.includes('http')?<a href='chat.text' target='_blank'/>:chat.text}
 
                             </div>
                             <div className="chat-footer text-amber-900 opacity-50">Delivered</div>
