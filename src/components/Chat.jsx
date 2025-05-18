@@ -27,7 +27,6 @@ const Chat = () => {
     const [file, setFile] = useState(null);
     const [uploadedUrl, setUploadedUrl] = useState('');
 
-    console.log("hello theme", theme)
     let interval;
 
     const getChats = async (id) => {
@@ -44,7 +43,6 @@ const Chat = () => {
 
    const handleUpload = async () => {
 
-    console.log('this is handle upload>>>>>>>>>>')
   const formData = new FormData();
   formData.append('file', file);
 
@@ -52,7 +50,9 @@ const Chat = () => {
     withCredentials:true
   });
 
-  console.log(res.data.fileUrl);
+  setUploadedUrl(res.data.fileUrl);
+  sendMessage(BASE_URL+res.data.fileUrl)
+
 };
 
 
@@ -120,11 +120,12 @@ const Chat = () => {
 
 
 
-    const sendMessage = () => {
+    const sendMessage = (msg) => {
+        console.log('this is sendingf message>>>>>>>',message)
         const socket = createSocketConnection()
 
         socket.emit('sendmessage', { firstName, userId, targetUser, message })
-        setChats((prev) => [...prev, { senderId: { firstName: "", lastName: "", photoUrl: userPhoto, _id: userId }, recieverId: { firstName: "", lastName: "", photoUrl: "", _id: targetUser }, createdAt: new Date().toISOString(), text: message }])
+        setChats((prev) => [...prev, { senderId: { firstName: "", lastName: "", photoUrl: userPhoto, _id: userId }, recieverId: { firstName: "", lastName: "", photoUrl: "", _id: targetUser }, createdAt: new Date().toISOString(), text: message||msg }])
 
         setMessage('')
     }
