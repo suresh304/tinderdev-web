@@ -21,9 +21,13 @@ const Chat = () => {
     const [modal, setModal] = useState({ isopen: false, data: {} })
     const messagesEndRef = useRef(null);
     const chatContainerRef = useRef(null);
-    const [idsToBeDeleted,setIdsToBeDeleted] = useState([])
-    const theme = useSelector(store=>store.themes)
-    console.log("hello theme",theme)
+    const [idsToBeDeleted, setIdsToBeDeleted] = useState([])
+    const theme = useSelector(store => store.themes)
+
+    const [file, setFile] = useState(null);
+    const [uploadedUrl, setUploadedUrl] = useState('');
+
+    console.log("hello theme", theme)
     let interval;
 
     const getChats = async (id) => {
@@ -32,17 +36,39 @@ const Chat = () => {
         setIdsToBeDeleted([])
     }
 
+
+
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    };
+
+   const handleUpload = async () => {
+
+    console.log('this is handle upload>>>>>>>>>>')
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await axios.post(`${BASE_URL}/upload`, formData, {
+    withCredentials:true
+  });
+
+  console.log(res.data.fileUrl);
+};
+
+
+
+
     useEffect(() => {
         if (!user?._id) return
         const socket = createSocketConnection()
 
         socket.emit('joinchat', { userId, firstName, targetUser })
 
-        socket.on('messagerecieved', ({ senderId, recieverId, text, createdAt ,deletedBy,_id}) => {
+        socket.on('messagerecieved', ({ senderId, recieverId, text, createdAt, deletedBy, _id }) => {
             if (userId == recieverId._id)
                 setChats((prev) => [...prev, { senderId, recieverId, text, createdAt }])
             idsToBeDeleted.push(_id)
-            setIdsToBeDeleted(prev=>[...idsToBeDeleted,_id])
+            setIdsToBeDeleted(prev => [...idsToBeDeleted, _id])
             setIsTyping(false)
 
         })
@@ -90,7 +116,7 @@ const Chat = () => {
 
 
         return () => clearTimeout(interval)
-    }, [chats, isTyping,idsToBeDeleted]);
+    }, [chats, isTyping, idsToBeDeleted]);
 
 
 
@@ -114,7 +140,7 @@ const Chat = () => {
 
     const deleteMessage = async (msgId) => {
         if (!msgId) {
-           setChats(prevChats => prevChats.slice(0, -1));
+            setChats(prevChats => prevChats.slice(0, -1));
             setModal({
                 ...modal,
                 isopen: false,
@@ -125,10 +151,10 @@ const Chat = () => {
         const socket = createSocketConnection()
         try {
 
-            if(!msgId&&idsToBeDeleted.length){
-            socket.emit('deletingMessage', { msgId:idsToBeDeleted[idsToBeDeleted.length-1], userId, targetUser })
-            setIdsToBeDeleted(prev=>prev.slice(0,-1))      
-            return
+            if (!msgId && idsToBeDeleted.length) {
+                socket.emit('deletingMessage', { msgId: idsToBeDeleted[idsToBeDeleted.length - 1], userId, targetUser })
+                setIdsToBeDeleted(prev => prev.slice(0, -1))
+                return
             }
             socket.emit('deletingMessage', { msgId, userId, targetUser })
 
@@ -139,9 +165,9 @@ const Chat = () => {
 
     return (
         <>
-            {modal.isopen && <Modal Yes={() => deleteMessage(modal.data.id)} No={ () => setModal({ ...modal, isopen: false })} onClose={() => setModal({ ...modal, isopen: false })} />}
+            {modal.isopen && <Modal Yes={() => deleteMessage(modal.data.id)} No={() => setModal({ ...modal, isopen: false })} onClose={() => setModal({ ...modal, isopen: false })} />}
             <div className="w-full   overflow-hidden  h-full flex flex-col justify-between  bg-cover bg-center bg-fixed"
-            style={{ backgroundImage: `url('/${theme}.png')` }}
+                style={{ backgroundImage: `url('/${theme}.png')` }}
             >
                 <div className='w-[25%] flex items-center justify-around rounded-b-lg p-1.5 bg-blue-300 mx-auto'>
                     <div>{targetUserFirsttName} {targetUserLastName}</div>
@@ -213,6 +239,35 @@ const Chat = () => {
                     <button className="btn btn-info" onClick={() => sendMessage()}>Chat</button>
 
                 </div>
+                <div className='flex justify-center items-center'>
+                    <input
+                        type="file"
+                        accept='zip'
+                        onChange={handleFileChange}
+                        placeholder="choose/upload files here"
+                        class="input input-bordered input-primary w-[70%] my-2" />
+                    <button className="btn btn-info" onClick={handleUpload}>File</button>
+
+                </div>
+
+
+
+                {uploadedUrl && (
+                    <div>
+                        <p className="mt-4 text-green-600">File uploaded!</p>
+                        <a
+                            href={uploadedUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-blue-800 underline"
+                        >
+                            Download Uploaded ZIP
+                        </a>
+                    </div>
+                )}
+
+
+
             </div>
         </>
     )
