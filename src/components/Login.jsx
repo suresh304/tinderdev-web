@@ -59,6 +59,7 @@ const Login = () => {
 
       <div className="card-body items-center text-center">
         <h2 className="card-title">{isLogin ? "Login" : "SignUp"}</h2>
+<form onSubmit={loginHandler}>
 
 
         {!isLogin && <><label className="input validator my-2">
@@ -98,8 +99,12 @@ const Login = () => {
         </label>
         
         {error && <p>{error}</p>}
-        <button className="btn btn-outline btn-primary w-full" onClick={loginHandler}>{isLogin ? "Login" : "SignUp"}</button>
-        <p onClick={() => setIsLogin(val => !val)}>{isLogin ? 'new user? signup here' : 'Are you member? Login here'}</p>
+        <button type = 'submit' className="btn btn-outline btn-primary w-full" onClick={loginHandler}>{isLogin ? "Login" : "SignUp"}</button>
+</form>
+        
+        <p onClick={() => setIsLogin(val => !val)} >
+          {isLogin ? 'new user? signup here' : 'Are you member? Login here'}
+          </p>
       </div>
     </div>
   )

@@ -72,7 +72,7 @@ useEffect(() => {
       <div className="flex gap-2 items-center">
         <Link to='/connections' className='btn btn-primary'>Connections</Link>
         <Link to='/requests' className='btn btn-primary'>Requests</Link>
-        {user && <p className='my-auto mx-5 text-xs uppercase font-semibold text-amber-100'>Welcome <i>{user?.firstName}</i>..!</p>}
+        {user && <p className='my-auto mx-5 text-xs uppercase font-semibold'>Welcome <i>{user?.firstName}</i>..!</p>}
         <div className="dropdown dropdown-end">
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar" onClick={() => setIsOpen(!isOpen)}>
             <div className="w-10 rounded-full" >
@@ -82,7 +82,7 @@ useEffect(() => {
           </div>
           {user && <ul
             tabIndex={0}
-            class="menu menu-sm text-cyan-50 dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+            class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
 
             <li>
               <Link to='/profile' className="justify-between">

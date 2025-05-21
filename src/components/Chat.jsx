@@ -26,13 +26,16 @@ const Chat = () => {
 
     const [file, setFile] = useState(null);
     const [uploadedUrl, setUploadedUrl] = useState('');
+    const [loading,setLoading] = useState(false)
 
     let interval;
 
     const getChats = async (id) => {
+        
         const data = await axios.get(`${BASE_URL}/chat/${targetUser}`, { withCredentials: true })
         setChats(data.data.messages)
         setIdsToBeDeleted([])
+        setLoading((prev)=>!prev)
     }
 
 
@@ -163,7 +166,7 @@ const Chat = () => {
         }
     };
 
-    return (
+    return chats.length>0?(
         <>
             {modal.isopen && <Modal Yes={() => deleteMessage(modal.data.id)} No={() => setModal({ ...modal, isopen: false })} onClose={() => setModal({ ...modal, isopen: false })} />}
             <div className="w-full   overflow-hidden  h-full flex flex-col justify-between  bg-cover bg-center bg-fixed"
@@ -237,7 +240,8 @@ const Chat = () => {
                     <button className="btn btn-info" onClick={() => sendMessage()}>Chat</button>
 
                 </div>
-                <div className='flex justify-center items-center'>
+                {/* file upload commented */}
+                {/* <div className='flex justify-center items-center'>
                     <input
                         type="file"
                         accept='zip'
@@ -246,7 +250,7 @@ const Chat = () => {
                         class="input input-bordered input-primary w-[70%] my-2" />
                     <button className="btn btn-info" onClick={handleUpload}>File</button>
 
-                </div>
+                </div> */}
 
 
 
@@ -268,7 +272,7 @@ const Chat = () => {
 
             </div>
         </>
-    )
+    ):<span className="loading loading-bars loading-lg"></span>
 }
 
 export default Chat
