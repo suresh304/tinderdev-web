@@ -35,7 +35,7 @@ const Feed = () => {
 
             
             const res = await fetch('http://localhost:3001/news?q='+query, {
-                credentials: 'include',
+                credentials: true,
             });
 
 
