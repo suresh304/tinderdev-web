@@ -11,8 +11,8 @@ const Modal = ({ onClose,Yes,No }) => {
           <h2 className="card-title">Deleting Message</h2>
           <p>Are you sure you want to delete this message?</p>
           <div className="card-actions justify-end w-full mt-4">
-            <button className="btn btn-secondary" onClick={Yes}>Yes</button>
-            <button className="btn btn-danger" onClick={No}>No</button>
+            <button className="btn btn-error" onClick={Yes}>Delete</button>
+            <button className="btn btn-secondary" onClick={No}>Cancel</button>
           </div>
         </div>
       </div>

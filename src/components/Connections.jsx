@@ -41,7 +41,7 @@ const Connections = () => {
     }
 
     return (
-        <div className='flex flex-row-reverse  h-[90%] bg-amber-100'>
+        <div className='flex flex-row-reverse  h-[90%]'>
             <div className='flex flex-3 overflow-y-scroll'>
 
             <Outlet/>
