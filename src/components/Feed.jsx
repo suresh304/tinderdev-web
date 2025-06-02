@@ -29,7 +29,7 @@ const Feed = () => {
 
 
 
-    const getNewsFeed = async () => {
+    const getNewsFeed1 = async () => {
         try {
               
 
@@ -53,6 +53,22 @@ const Feed = () => {
 
     }
 
+const getNewsFeed = async () => {
+    try {
+        const res = await fetch('/api/news?q=' + query, {
+            credentials: 'include', // correct option (not `withCredentials`)
+        });
+
+        const data = await res.json();
+        console.log(data);
+
+        if (res.ok) {
+            setNewsFeed(data.articles);
+        }
+    } catch (error) {
+        console.log('error while getting news..', error);
+    }
+};
 
 
     useEffect(() => {
