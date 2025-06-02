@@ -55,8 +55,8 @@ const Feed = () => {
 
 const getNewsFeed = async () => {
     try {
-        const res = await fetch('/api/news?q=' + query, {
-            credentials: 'include', // correct option (not `withCredentials`)
+        const res = await fetch(BASE_URL+"/news?q="+ query, {
+            withCredentials: true, 
         });
 
         const data = await res.json();
