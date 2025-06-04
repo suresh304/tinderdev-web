@@ -32,7 +32,7 @@ const Chat = () => {
 
     const getChats = async (id) => {
         
-        const data = await axios.get(`${BASE_URL}/chat/${targetUser}`, { withCredentials: true })
+        const data = await axios.get(`${BASE_URL}/chat/${targetUser}/messages?limit=10&skip=0`, { withCredentials: true })
         setChats(data.data.messages)
         setIdsToBeDeleted([])
         setLoading((prev)=>!prev)
@@ -177,7 +177,7 @@ const Chat = () => {
 
 
                 </div>
-                <div className='overflow-scroll' ref={chatContainerRef}>
+                <div className='overflow-scroll' ref={chatContainerRef} >
 
                     {chats?.map((chat, i) => {
                         return <div className={chat?.senderId?._id == userId ? "chat chat-end" : "chat chat-start"} key={i}>
@@ -241,7 +241,7 @@ const Chat = () => {
 
                 </div>
                 {/* file upload commented */}
-                {/* <div className='flex justify-center items-center'>
+                <div className='flex justify-center items-center'>
                     <input
                         type="file"
                         accept='zip'
@@ -250,7 +250,7 @@ const Chat = () => {
                         class="input input-bordered input-primary w-[70%] my-2" />
                     <button className="btn btn-info" onClick={handleUpload}>File</button>
 
-                </div> */}
+                </div>
 
 
 
