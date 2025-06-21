@@ -72,8 +72,15 @@ const getNewsFeed = async () => {
 
 
     useEffect(() => {
+         
+
+      const x=  setTimeout(()=>{
         getFeed()
         getNewsFeed()
+        },500)
+
+
+       return ()=>clearTimeout(x)
     }, [query])
 
 
