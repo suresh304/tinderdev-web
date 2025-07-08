@@ -26,16 +26,16 @@ const Chat = () => {
 
     const [file, setFile] = useState(null);
     const [uploadedUrl, setUploadedUrl] = useState('');
-    const [loading,setLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
 
     let interval;
 
     const getChats = async (id) => {
-        
-        const data = await axios.get(`${BASE_URL}/chat/${targetUser}/messages?limit=10&skip=0`, { withCredentials: true })
+
+        const data = await axios.get(`${BASE_URL}/chat/${targetUser}/`, { withCredentials: true })
         setChats(data.data.messages)
         setIdsToBeDeleted([])
-        setLoading((prev)=>!prev)
+        setLoading((prev) => !prev)
     }
 
 
@@ -44,18 +44,25 @@ const Chat = () => {
         setFile(e.target.files[0]);
     };
 
-   const handleUpload = async () => {
+    const handleUpload = async () => {
 
-  const formData = new FormData();
-  formData.append('file', file);
+        const formData = new FormData();
+        formData.append('file', file);
 
-  const res = await axios.post(`${BASE_URL}/upload`, formData, {
-    withCredentials:true
-  });
+        const res = await axios.post(`${BASE_URL}/upload`, formData, {
+            withCredentials: true
+        });
 
-  setUploadedUrl(res.data.fileUrl);
+        setUploadedUrl(res.data.fileUrl);
 
-};
+    };
+
+
+    useEffect(() => {
+        if ("Notification" in window && Notification.permission !== "granted") {
+            Notification.requestPermission();
+        }
+    }, []);
 
 
 
@@ -69,6 +76,12 @@ const Chat = () => {
         socket.on('messagerecieved', ({ senderId, recieverId, text, createdAt, deletedBy, _id }) => {
             if (userId == recieverId._id)
                 setChats((prev) => [...prev, { senderId, recieverId, text, createdAt }])
+            if (Notification.permission === "granted") {
+                new Notification("New message", {
+                    body: `${senderId.firstName}: ${text}`,
+                    icon: senderId.photoUrl, // Optional
+                });
+            }
             idsToBeDeleted.push(_id)
             setIdsToBeDeleted(prev => [...idsToBeDeleted, _id])
             setIsTyping(false)
@@ -123,11 +136,11 @@ const Chat = () => {
 
 
     const sendMessage = (msg) => {
-        console.log('this is sendingf message>>>>>>>',message)
+        console.log('this is sendingf message>>>>>>>', message)
         const socket = createSocketConnection()
 
         socket.emit('sendmessage', { firstName, userId, targetUser, message })
-        setChats((prev) => [...prev, { senderId: { firstName: "", lastName: "", photoUrl: userPhoto, _id: userId }, recieverId: { firstName: "", lastName: "", photoUrl: "", _id: targetUser }, createdAt: new Date().toISOString(), text: message||msg }])
+        setChats((prev) => [...prev, { senderId: { firstName: "", lastName: "", photoUrl: userPhoto, _id: userId }, recieverId: { firstName: "", lastName: "", photoUrl: "", _id: targetUser }, createdAt: new Date().toISOString(), text: message || msg }])
 
         setMessage('')
     }
@@ -166,11 +179,11 @@ const Chat = () => {
         }
     };
 
-    return chats.length>0?(
+    return (
         <>
             {modal.isopen && <Modal Yes={() => deleteMessage(modal.data.id)} No={() => setModal({ ...modal, isopen: false })} onClose={() => setModal({ ...modal, isopen: false })} />}
             <div className="w-full   overflow-hidden  h-full flex flex-col justify-between  bg-cover bg-center bg-fixed"
-                // style={{ backgroundImage: `url('/${theme}.png')` }}
+            // style={{ backgroundImage: `url('/${theme}.png')` }}
             >
                 <div className='w-[25%] flex items-center justify-around rounded-b-lg p-1.5 bg-blue-300 mx-auto'>
                     <div>{targetUserFirsttName} {targetUserLastName}</div>
@@ -202,7 +215,7 @@ const Chat = () => {
                                 })
                             }>
 
-                                {chat.text.includes('http')?<a href='chat.text' target='_blank'/>:chat.text}
+                                {chat.text.includes('http') ? <a href='chat.text' target='_blank' /> : chat.text}
 
                             </div>
                             <div className="chat-footer text-amber-900 opacity-50">Delivered</div>
@@ -271,8 +284,22 @@ const Chat = () => {
 
 
             </div>
+
+            <button onClick={() => {
+                if (Notification.permission === "granted") {
+      console.log("hello")
+    new Notification("Test Message", {
+      body: "You clicked the button!",
+    });
+  } else {
+    Notification.requestPermission();
+  }
+}}>
+  Test Notification1
+</button>
+
         </>
-    ):<span className="loading loading-bars loading-lg"></span>
+    )
 }
 
 export default Chat

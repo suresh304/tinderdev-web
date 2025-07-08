@@ -46,7 +46,7 @@ const Connections = () => {
 
             <Outlet/>
             </div>
-        <div className={`flex flex-1   flex-col items-center overflow-y-scroll `}>
+        <div className={`flex flex-1   flex-col items-center overflow-y-scroll bg-amber-100`}>
             {/* <h1 className='font-bold text-2xl my-4'>Connections</h1> */}
             <ul className="list bg-base-100 rounded-box shadow-md w-full ">
             {connections?.map((connection, i) => {

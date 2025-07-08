@@ -73,20 +73,37 @@ const getNewsFeed = async () => {
 
     useEffect(() => {
         getFeed()
-        getNewsFeed()
     }, [query])
+
+    useEffect(() => {
+        console.log('render')
+  const delayDebounce = setTimeout(() => {
+    if (query) {
+      getNewsFeed(); // Call your API here
+    }
+  }, 1000); // 500ms delay
+
+  return () => clearTimeout(delayDebounce); // Cleanup on query change
+}, [query]);
 
 
     return (
         <>
             {!feed?.length && <h1 className='text-4xl font-extrabold mx-20'> OOPS No suggestions...</h1>}
 
-            <div className='flex  max-w-full  overflow-x-scroll'>
-                <div className='text-2xl font-bold mx-20'> Search for interesting news </div>
-                <input type="text" placeholder="Type key words for news" class="input input-accent" onChange={(e) => setQuery(e.target.value)} />
+            <div className='flex flex-col-reverse max-w-full  overflow-x-scroll'>
+                
+                <div className='flex '>
+
                 {feed?.map((feed, i) => <FeedCard {...feed} />)}
+                </div>
 
             </div>
+            <div className='flex justify-center m-10 bg-amber-300'>
+
+                <div className='text-2xl font-bold mx-20'> Search for interesting news </div>
+                <input type="text" placeholder="Type key words for news" class="input input-accent" onChange={(e) => setQuery(e.target.value)} />
+                </div>
             <div className='flex justify-center flex-wrap'>
                 {newsFeed?.map((news, i) => (
                     <NewsCard
