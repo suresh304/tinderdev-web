@@ -19,10 +19,10 @@ const FeedCard = (feed) => {
     }
 
   return (
-    <div className="card ml-5 p-5 text-cyan-950  bg-amber-50 min-w-80 h-[60vh] shadow-sm">
+    <div className="card ml-5 p-5 text-cyan-950  bg-amber-50 min-w-80 h-[60vh] overflow-scroll shadow-sm">
   <figure>
     <img
-    className='w-60 rounded-full  h-60 mt-4'
+    className='w-60 rounded-full mt-4'
       src={photoUrl||"https://fastly.picsum.photos/id/683/200/200.jpg?hmac=gsOZBaeY42qvlTQSCuucn40FRUEnTdDYKl9q-YMcZh4"}
       alt="xyz" />
   </figure>
