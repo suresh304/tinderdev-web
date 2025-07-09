@@ -76,14 +76,13 @@ const getNewsFeed = async () => {
 
       const x=  setTimeout(()=>{
         getFeed()
-<<<<<<< HEAD
-=======
+
         getNewsFeed()
         },500)
 
 
        return ()=>clearTimeout(x)
->>>>>>> d0861d1356452a8d997206b954bb25ef28fd6ee0
+
     }, [query])
 
     useEffect(() => {
