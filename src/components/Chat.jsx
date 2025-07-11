@@ -45,17 +45,30 @@ const Chat = () => {
     };
 
     const handleUpload = async () => {
+        if (!file) {
+            alert("Please select a file first");
+            return;
+        }
 
-        const formData = new FormData();
-        formData.append('file', file);
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
 
-        const res = await axios.post(`${BASE_URL}/upload`, formData, {
-            withCredentials: true
-        });
+            const res = await axios.post(`${BASE_URL}/upload`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                withCredentials: true // needed if backend uses cookies
+            });
 
-        setUploadedUrl(res.data.fileUrl);
-
+            setUploadedUrl(res.data.fileUrl); // S3 public URL
+            alert("Upload successful!");
+        } catch (err) {
+            console.error("Upload failed:", err);
+            alert("Upload failed. See console for details.");
+        }
     };
+
 
 
     useEffect(() => {
@@ -251,10 +264,7 @@ const Chat = () => {
                         placeholder="Type here"
                         class="input input-bordered input-primary w-[70%] my-2" />
                     <button className="btn btn-info" onClick={() => sendMessage()}>Chat</button>
-
-                </div>
-                {/* file upload commented */}
-                <div className='flex justify-center items-center'>
+                    <div className='flex justify-center items-center'>
                     <input
                         type="file"
                         accept='zip'
@@ -262,8 +272,19 @@ const Chat = () => {
                         placeholder="choose/upload files here"
                         class="input input-bordered input-primary w-[70%] my-2" />
                     <button className="btn btn-info" onClick={handleUpload}>File</button>
+                </div>
 
                 </div>
+                
+                {/* <div className='flex justify-center items-center'>
+                    <input
+                        type="file"
+                        accept='zip'
+                        onChange={handleFileChange}
+                        placeholder="choose/upload files here"
+                        class="input input-bordered input-primary w-[70%] my-2" />
+                    <button className="btn btn-info" onClick={handleUpload}>File</button>
+                </div> */}
 
 
 
@@ -285,18 +306,6 @@ const Chat = () => {
 
             </div>
 
-            <button onClick={() => {
-                if (Notification.permission === "granted") {
-      console.log("hello")
-    new Notification("Test Message", {
-      body: "You clicked the button!",
-    });
-  } else {
-    Notification.requestPermission();
-  }
-}}>
-  Test Notification1
-</button>
 
         </>
     )
