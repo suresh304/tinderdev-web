@@ -264,49 +264,14 @@ const Chat = () => {
                         placeholder="Type here"
                         class="input input-bordered input-primary w-[70%] my-2" />
                     <button className="btn btn-info" onClick={() => sendMessage()}>Chat</button>
-                    <div className='flex justify-center items-center'>
-                    <input
-                        type="file"
-                        accept='zip'
-                        onChange={handleFileChange}
-                        placeholder="choose/upload files here"
-                        class="input input-bordered input-primary w-[70%] my-2" />
-                    <button className="btn btn-info" onClick={handleUpload}>File</button>
-                </div>
+
+
+
+
 
                 </div>
-                
-                {/* <div className='flex justify-center items-center'>
-                    <input
-                        type="file"
-                        accept='zip'
-                        onChange={handleFileChange}
-                        placeholder="choose/upload files here"
-                        class="input input-bordered input-primary w-[70%] my-2" />
-                    <button className="btn btn-info" onClick={handleUpload}>File</button>
-                </div> */}
-
-
-
-                {uploadedUrl && (
-                    <div>
-                        <p className="mt-4 text-green-600">File uploaded!</p>
-                        <a
-                            href={uploadedUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-800 underline"
-                        >
-                            Download Uploaded ZIP
-                        </a>
-                    </div>
-                )}
-
-
 
             </div>
-
-
         </>
     )
 }

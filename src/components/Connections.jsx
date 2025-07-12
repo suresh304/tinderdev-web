@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BASE_URL } from '../constants'
 import { useDispatch, useSelector } from 'react-redux'
 import { addConnections } from '../utils/connectionsSlice'
@@ -7,6 +7,7 @@ import { setTheme } from '../utils/themeSlice'
 import { store } from '../utils/appstore'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
 import '../index.css';
+import Toast from './Toast'
 
 const Connections = () => {
 
@@ -14,7 +15,11 @@ const Connections = () => {
     const connections = useSelector((store) => store.connection)
     const user = useSelector(store => store.user)
     const theme = useSelector(store => store.themes)
-    console.log("this is themes>>>>>>>>>>>>", user)
+    console.log("user info", user)
+    const [uploading,setUploading] = useState(false)
+    const [file, setFile] = useState(null);
+    const [showToast,setShowToast] = useState(false)
+
     const navigate = useNavigate()
 
     const fetchConnections = async () => {
@@ -37,6 +42,7 @@ const Connections = () => {
         }
 
         try {
+          setUploading(true)
             const formData = new FormData();
             formData.append('file', file);
 
@@ -44,14 +50,20 @@ const Connections = () => {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },
-                withCredentials: true // needed if backend uses cookies
+                withCredentials: true 
             });
 
-            setUploadedUrl(res.data.fileUrl); // S3 public URL
-            alert("Upload successful!");
+            // setUploadedUrl(res.data.fileUrl); 
+            setUploading(false)
+            setShowToast(true)
+            setTimeout(()=>{
+              setShowToast(false)
+            },4000)
+           
+            
         } catch (err) {
             console.error("Upload failed:", err);
-            alert("Upload failed. See console for details.");
+            
         }
     };
 
@@ -70,6 +82,7 @@ const Connections = () => {
 
     return (
         <div className='flex flex-row-reverse  h-[90%]'>
+          {showToast&&<Toast message={"uploaded successfully!"}/>}
             <div className='flex flex-3 overflow-y-scroll'>
 
                 <Outlet />
@@ -85,13 +98,22 @@ const Connections = () => {
         onChange={handleFileChange}
         className="input input-bordered input-primary w-[70%]"
       />
-      <button className="btn btn-info" onClick={handleUpload}>Upload</button>
-    </div>}
+      <button className="btn btn-primary" onClick={handleUpload}>
+        Upload
+        {uploading&&<span className="loading loading-ring loading-md"></span>}
+        </button>
+    </div>
+    
+    }
+    
   </div>
+  
 
   {/* 🔃 Scrollable List */}
   <div className="flex-1 overflow-y-auto px-4 pb-4">
     <ul className="list bg-base-100 rounded-box shadow-md w-full">
+     
+
       {connections?.map((connection, i) => {
         const { firstName, lastName, photoUrl, _id } = connection;
         return (
