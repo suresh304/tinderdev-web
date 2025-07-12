@@ -1,4 +1,4 @@
-name: Deploy Frontend to Azure VM
+name: Deploy Frontend to AWS EC2
 
 on:
   push:
@@ -13,14 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Deploy to Azure VM via SSH
+      - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v0.1.10
         with:
-          host: ${{ secrets.AZURE_HOST }}
-          username: ${{ secrets.AZURE_USER }}
-          key: ${{ secrets.AZURE_SSH_KEY }}
+          host: ${{ secrets.AWS_HOST }}
+          username: ${{ secrets.AWS_USER }} # usually 'ubuntu' for Ubuntu AMIs
+          key: ${{ secrets.AWS_SSH_KEY }}
           script: |
-            cd /home/azureuser
+            cd /home/ubuntu
             chmod +x deploy-frontend.sh
             ./deploy-frontend.sh
 
@@ -28,5 +28,5 @@ jobs:
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
             -d chat_id=${{ secrets.CHAT_ID }} \
-            -d text="✅ Heyy SURESH Frontend deployment to Azure VM completed successfully from *main* branch!" \
+            -d text="✅ Heyy SURESH Frontend deployment to AWS EC2 completed successfully from *main* branch!" \
             -d parse_mode=Markdown
