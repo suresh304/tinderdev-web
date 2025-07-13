@@ -195,7 +195,7 @@ const Chat = () => {
     return (
         <>
             {modal.isopen && <Modal Yes={() => deleteMessage(modal.data.id)} No={() => setModal({ ...modal, isopen: false })} onClose={() => setModal({ ...modal, isopen: false })} />}
-            <div className="w-full   overflow-hidden  h-full flex flex-col justify-between  bg-cover bg-center bg-fixed"
+            <div className=" relative w-full   overflow-hidden  h-screen flex flex-col justify-between  bg-cover bg-center bg-fixed pt-[64px]"
             // style={{ backgroundImage: `url('/${theme}.png')` }}
             >
                 <div className='w-[25%] flex items-center justify-around rounded-b-lg p-1.5 bg-blue-300 mx-auto'>
@@ -254,7 +254,7 @@ const Chat = () => {
 
 
                 </div>
-                <div className='flex justify-center items-center'>
+                <div className='fixed bottom-0  z-50 w-[70%] flex justify-center items-center'>
                     <input
                         type="text"
                         value={message}

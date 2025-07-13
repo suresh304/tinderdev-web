@@ -14,6 +14,7 @@ const Requests = () => {
   const requests = useSelector((store) => store.request)
 
   const fetchrequests = async () => {
+    if(requests) return;
     try {
       const res = await axios.get(`${BASE_URL}/user/request/received`, { withCredentials: true })
       dispatch(addRequest(res?.data?.data))

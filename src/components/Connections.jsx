@@ -23,7 +23,10 @@ const Connections = () => {
     const navigate = useNavigate()
 
     const fetchConnections = async () => {
+      console.log(connections)
+                if(connections) return;
         try {
+
             const res = await axios.get(`${BASE_URL}/user/connections`, { withCredentials: true })
             dispatch(addConnections(res?.data?.data))
         } catch (error) {
@@ -81,7 +84,7 @@ const Connections = () => {
     }
 
     return (
-        <div className='flex flex-row-reverse  h-[90%]'>
+        <div className='flex flex-row-reverse  h-[85%]'>
           {showToast&&<Toast message={"uploaded successfully!"}/>}
             <div className='flex flex-3 overflow-y-scroll'>
 

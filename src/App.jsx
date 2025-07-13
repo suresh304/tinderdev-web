@@ -26,7 +26,7 @@ function App() {
         <Route path='/profile' element={<Profile/>}/>
         <Route path='/' element={<Feed/>}/>
         <Route path='/requests' element={<Requests/>}/>
-        <Route path='/' element={<Requests/>}/>
+        {/* <Route path='/' element={<Requests/>}/> */}
         <Route path='/connections' element={<Connections/>}>
         <Route path='connections/chat/:targetUser/:firstName?/:lastName?' element={<Chat/>}/>
         </Route>
