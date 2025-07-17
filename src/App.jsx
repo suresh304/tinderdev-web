@@ -24,7 +24,7 @@ function App() {
       <Route path = "/" element={<Body/>}>
         <Route path='/login' element={<Login/>}/>
         <Route path='/profile' element={<Profile/>}/>
-        <Route path='/' element={<Feed/>}/>
+        <Route path='/feed' element={<Feed/>}/>
         <Route path='/requests' element={<Requests/>}/>
         {/* <Route path='/' element={<Requests/>}/> */}
         <Route path='/connections' element={<Connections/>}>

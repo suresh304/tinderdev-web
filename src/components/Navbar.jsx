@@ -56,7 +56,7 @@ useEffect(() => {
   return (
     <div className="navbar bg-blue-300 shadow-sm ">
       <div className="flex-1 my-auto">
-        <Link to="/" className="btn btn-ghost text-xl">sureChat😍💕</Link>
+        <Link to="/feed" className="btn btn-ghost text-xl">sureChat😍💕</Link>
         <select
       value={currTheme}
       defaultValue={themes[0]}

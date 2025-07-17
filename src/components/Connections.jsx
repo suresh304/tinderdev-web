@@ -73,11 +73,11 @@ const Connections = () => {
 
 
 
-    useEffect(() => {
-        if (user)
-            fetchConnections()
-        else navigate('/login')
-    }, [])
+    // useEffect(() => {
+    //     if (user)
+    //         fetchConnections()
+    //     else navigate('/login')
+    // }, [])
     if (!connections) return
     if (connections.length == 0) {
         return <h1>No connections found</h1>

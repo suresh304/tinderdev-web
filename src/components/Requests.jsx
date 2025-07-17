@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addRequest, removeRequest } from '../utils/requestSlice'
 import axios from 'axios'
 import { BASE_URL } from '../constants'
+import { useNavigate } from 'react-router-dom'
+import Toast from './Toast'
 
 const Requests = () => {
 
@@ -12,8 +14,18 @@ const Requests = () => {
 
   const dispatch = useDispatch()
   const requests = useSelector((store) => store.request)
+  const user = useSelector(store => store.user)
+  const navigate = useNavigate()
+  const [notify,setNotify] = useState(false)
 
   const fetchrequests = async () => {
+    setNotify(false)
+    if (!user) {
+      navigate('/login')
+      setNotify(true)
+      
+      
+    }
     if(requests) return;
     try {
       const res = await axios.get(`${BASE_URL}/user/request/received`, { withCredentials: true })
@@ -40,6 +52,9 @@ const Requests = () => {
   useEffect(() => {
     fetchrequests()
   }, [])
+  useEffect(()=>{
+console.log('notfy')
+  },[notify])
   if (!requests) return
   if (requests.length == 0) {
     return <h1>No reqests found</h1>
@@ -71,6 +86,7 @@ const Requests = () => {
            </div>
          </div>
         })}
+        {notify&&<Toast message={"Please login"}/>}
     </div>
   )
 }

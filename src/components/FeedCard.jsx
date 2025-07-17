@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux'
 
 const FeedCard = (feed) => {
   const dispatch = useDispatch()
-  const { age, firstName, lastName, gender, photoUrl, about, _id } = feed
+  const { age, first_name, last_name, gender, photo_url, about, _id } = feed
 
   const handleSendRequest = async (status, userId) => {
     try {
@@ -23,8 +23,8 @@ const FeedCard = (feed) => {
       <div className="card-body">
         <div className='flex justify-between flex-row-reverse'>
 
-          <h2 className="card-title">{firstName} {lastName}</h2>
-          <img className=" w-16 h-16 rounded-full" src={photoUrl || 'https://www.thewowstyle.com/wp-content/uploads/2015/01/nature-images..jpg'} />
+          <h2 className="card-title">{first_name} {last_name}</h2>
+          <img className=" w-16 h-16 rounded-full" src={photo_url || 'https://www.thewowstyle.com/wp-content/uploads/2015/01/nature-images..jpg'} />
         </div>
         <p>{about}</p>
         <div className="card-actions justify-end">
