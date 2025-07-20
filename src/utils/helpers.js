@@ -12,3 +12,6 @@ export const formatTime = (timestamp) =>{
     return date.toLocaleString("en-IN", options);
 }
 
+export const log = (...args) => {
+  console.log(new Date().toISOString(), ...args);
+};

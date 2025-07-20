@@ -19,7 +19,7 @@ const Feed = () => {
             return
         }
 
-        const res = await axios.get(`${BASE_URL}/feed`, {
+        const res = await axios.get(`${BASE_URL}/feed1`, {
             withCredentials: true
         })
         dispactch(addFeed(res?.data?.data))

@@ -5,16 +5,16 @@ import { useSelector } from 'react-redux'
 import { use } from 'react'
 import axios from 'axios'
 import { BASE_URL } from '../constants'
-import { formatTime } from '../utils/helpers'
+import { formatTime, log } from '../utils/helpers'
 import Modal from './Modal'
 
 const Chat = () => {
-    const { targetUser, firstName: targetUserFirsttName, lastName: targetUserLastName } = useParams()
+    const { targetUser, first_name: targetUserFirsttName, last_name: targetUserlast_name } = useParams()
 
     const user = useSelector(store => store.user)
-    const userId = user?._id
-    const userPhoto = user?.photoUrl
-    const firstName = user?.firstName
+    const userId = user?.id
+    const userPhoto = user?.photo_url
+    const first_name = user?.first_name
     const [message, setMessage] = useState('')
     const [chats, setChats] = useState([])
     const [isTyping, setIsTyping] = useState(false)
@@ -81,18 +81,18 @@ const Chat = () => {
 
 
     useEffect(() => {
-        if (!user?._id) return
+        if (!user?.id) return
         const socket = createSocketConnection()
 
-        socket.emit('joinchat', { userId, firstName, targetUser })
+        socket.emit('joinchat', { userId, first_name, targetUser })
 
-        socket.on('messagerecieved', ({ senderId, recieverId, text, createdAt, deletedBy, _id }) => {
-            if (userId == recieverId._id)
+        socket.on('messagerecieved', ({ sender_id, receiver_id, text, created_at, deletedBy, id }) => {
+            if (userId == recieverId.id)
                 setChats((prev) => [...prev, { senderId, recieverId, text, createdAt }])
             if (Notification.permission === "granted") {
                 new Notification("New message", {
-                    body: `${senderId.firstName}: ${text}`,
-                    icon: senderId.photoUrl, // Optional
+                    body: `${senderId.first_name}: ${text}`,
+                    icon: sender_photo_url, // Optional
                 });
             }
             idsToBeDeleted.push(_id)
@@ -152,8 +152,8 @@ const Chat = () => {
         console.log('this is sendingf message>>>>>>>', message)
         const socket = createSocketConnection()
 
-        socket.emit('sendmessage', { firstName, userId, targetUser, message })
-        setChats((prev) => [...prev, { senderId: { firstName: "", lastName: "", photoUrl: userPhoto, _id: userId }, recieverId: { firstName: "", lastName: "", photoUrl: "", _id: targetUser }, createdAt: new Date().toISOString(), text: message || msg }])
+        socket.emit('sendmessage', { first_name, userId, targetUser, message })
+        setChats((prev) => [...prev, { senderId: { first_name: "", last_name: "", photo_url: userPhoto, id: userId }, recieverId: { first_name: "", last_name: "", photo_url: "", id: targetUser }, createdAt: new Date().toISOString(), text: message || msg }])
 
         setMessage('')
     }
@@ -199,23 +199,24 @@ const Chat = () => {
             // style={{ backgroundImage: `url('/${theme}.png')` }}
             >
                 <div className='w-[25%] flex items-center justify-around rounded-b-lg p-1.5 bg-blue-300 mx-auto'>
-                    <div>{targetUserFirsttName} {targetUserLastName}</div>
+                    <div>{targetUserFirsttName} {targetUserlast_name}</div>
 
 
                 </div>
                 <div className='overflow-scroll' ref={chatContainerRef} >
 
                     {chats?.map((chat, i) => {
-                        return <div className={chat?.senderId?._id == userId ? "chat chat-end" : "chat chat-start"} key={i}>
+                        log(chat)
+                        return <div className={chat?.sender_id == userId ? "chat chat-end" : "chat chat-start"} key={i}>
                             <div className="chat-image avatar pl-5">
                                 <div className="w-10 rounded-full">
                                     <img
                                         alt="Chat Profile"
-                                        src={chat.senderId.photoUrl}
+                                        src={chat.sender_photo_url}
                                     /> </div>
                             </div>
                             <div className="chat-header">
-                                <time className="text-xs opacity-50 text-blue-700 font-bold">{formatTime(chat.createdAt)}</time>
+                                <time className="text-xs opacity-50 text-blue-700 font-bold">{formatTime(chat.created_at)}</time>
                             </div>
                             <div className="chat-bubble" onDoubleClick={() =>
                                 setModal({
@@ -223,7 +224,7 @@ const Chat = () => {
                                     isopen: true,
                                     data: {
                                         ...modal.data,
-                                        id: chat._id
+                                        id: chat.id
                                     }
                                 })
                             }>

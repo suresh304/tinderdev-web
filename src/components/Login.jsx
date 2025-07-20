@@ -9,8 +9,8 @@ const Login = () => {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [firstName, setFirstName] = useState("")
-  const [lastName, setLastName] = useState("")
+  const [first_name, setfirst_name] = useState("")
+  const [last_name, setlast_name] = useState("")
   const [error, setError] = useState("")
   const [isLogin, setIsLogin] = useState(true)
   const navigate = useNavigate()
@@ -19,15 +19,15 @@ const Login = () => {
   const loginHandler = async () => {
     const api = isLogin ? 'login' : "signup"
     const loginData = {
-      "emailId": email,
+      "email_id": email,
       "password": password
     }
 
     const signUpData = {
-      "emailId": email.toLowerCase(),
+      "email_id": email.toLowerCase(),
       "password": password,
-      "firstName": firstName,
-      "lastName": lastName
+      "first_name": first_name,
+      "last_name": last_name
     }
     const data = isLogin ? loginData : signUpData
     try {
@@ -36,6 +36,8 @@ const Login = () => {
           withCredentials: true
         })
       if (res.status == 200 && isLogin) {
+        console.log("hello");
+        
         navigate('/')
         dispatch(addUser(res.data))
       } else if (!(res.status == 200 && isLogin)) {
@@ -65,16 +67,16 @@ const Login = () => {
         {!isLogin && <><label className="input validator my-2">
           <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></g></svg>
           <input type="input" required
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            placeholder="FirstName" pattern="[A-Za-z][A-Za-z0-9\-]*" minlength="3" maxlength="30" title="Only letters, numbers or dash" />
+            value={first_name}
+            onChange={(e) => setfirst_name(e.target.value)}
+            placeholder="first_name" pattern="[A-Za-z][A-Za-z0-9\-]*" minlength="3" maxlength="30" title="Only letters, numbers or dash" />
         </label>
           <label className="input validator my-2">
             <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></g></svg>
             <input type="input" required
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder="lastName" pattern="[A-Za-z][A-Za-z0-9\-]*" minlength="3" maxlength="30" title="Only letters, numbers or dash" />
+              value={last_name}
+              onChange={(e) => setlast_name(e.target.value)}
+              placeholder="last_name" pattern="[A-Za-z][A-Za-z0-9\-]*" minlength="3" maxlength="30" title="Only letters, numbers or dash" />
           </label>
 
          

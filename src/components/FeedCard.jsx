@@ -3,10 +3,12 @@ import React from 'react'
 import { BASE_URL } from '../constants'
 import { removeFeed } from '../utils/feedSlice'
 import { useDispatch } from 'react-redux'
+import { log } from '../utils/helpers'
 
 const FeedCard = (feed) => {
   const dispatch = useDispatch()
-  const { age, first_name, last_name, gender, photo_url, about, _id } = feed
+  const { age, first_name, last_name, gender, photo_url, about, id } = feed
+  log(feed)
 
   const handleSendRequest = async (status, userId) => {
     try {
@@ -28,8 +30,8 @@ const FeedCard = (feed) => {
         </div>
         <p>{about}</p>
         <div className="card-actions justify-end">
-          <button className="btn btn-primary" onClick={() => handleSendRequest('interested', _id)}>interested</button>
-          <button className="btn btn-error" onClick={() => handleSendRequest('ignored', _id)}>ignored</button>
+          <button className="btn btn-primary" onClick={() => handleSendRequest('interested', id)}>interested</button>
+          <button className="btn btn-error" onClick={() => handleSendRequest('ignored', id)}>ignored</button>
         </div>
       </div>
     </div>

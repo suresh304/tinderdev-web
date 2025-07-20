@@ -11,12 +11,12 @@ const EditProfile = (user) => {
   console.log(user);
   
   // const {first_name,last_name,age,photo_url} = user
-  const [first_name, setFirstName] = useState(user.first_name)
-  const [last_name, setLastName] = useState(user.last_name)
+  const [first_name, setfirst_name] = useState(user.first_name)
+  const [last_name, setlast_name] = useState(user.last_name)
   const [age, setAge] = useState(user.age)
   const [gender, setGender] = useState()
   const [error, setError] = useState()
-  const [photo_url, setPhotoUrl] = useState(user.photo_url || '')
+  const [photo_url, setphoto_url] = useState(user.photo_url || '')
   const [about,setAbout] = useState(user.about)
   const dispatch = useDispatch()
   const [showtoast, setShowtoast] = useState(false)
@@ -48,7 +48,7 @@ const EditProfile = (user) => {
             <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></g></svg>
             <input type="input" required
               value={first_name}
-              onChange={(e) => setFirstName(e.target.value)}
+              onChange={(e) => setfirst_name(e.target.value)}
               placeholder="first_name" pattern="[A-Za-z][A-Za-z0-9\-]*" minlength="3" maxlength="30" title="Only letters, numbers or dash" />
           </label>
 
@@ -59,7 +59,7 @@ const EditProfile = (user) => {
 
             <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle></g></svg>
             <input type="input" required value={last_name}
-              onChange={(e) => setLastName(e.target.value)}
+              onChange={(e) => setlast_name(e.target.value)}
 
               placeholder="last_name" minlength="8" title="Must be more than 8 characters, including number, lowercase letter, uppercase letter" />
           </label>
@@ -77,7 +77,7 @@ const EditProfile = (user) => {
 
             <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle></g></svg>
             <input type="input" required value={photo_url}
-              onChange={(e) => setPhotoUrl(e.target.value)}
+              onChange={(e) => setphoto_url(e.target.value)}
 
               placeholder="photo_url" minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}" title="Must be more than 8 characters, including number, lowercase letter, uppercase letter" />
           </label>

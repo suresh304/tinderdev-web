@@ -5,6 +5,7 @@ import axios from 'axios'
 import { BASE_URL } from '../constants'
 import { useNavigate } from 'react-router-dom'
 import Toast from './Toast'
+import { log } from '../utils/helpers'
 
 const Requests = () => {
 
@@ -26,9 +27,11 @@ const Requests = () => {
       
       
     }
-    if(requests) return;
+    // if(requests) return;
     try {
       const res = await axios.get(`${BASE_URL}/user/request/received`, { withCredentials: true })
+
+      log("this is ",res.data.data)
       dispatch(addRequest(res?.data?.data))
     } catch (error) {
       console.log("error fetching the recieed reqests ", error)
@@ -70,17 +73,17 @@ console.log('notfy')
     <div className='flex  flex-col items-center'>
         <h1 className='font-bold text-2xl my-4'>Requests</h1>
         {requests?.map((request,i)=>{
-            const {firstName,lastName,photourl} = request.fromUserId
+            const {first_name,last_name,photo_url} = request
            return <div className="card  bg-base-300 my-2  shadow-sm">
            <div className="card-body">
             <div className='flex justify-between flex-row-reverse'>
 
-             <h2 className="card-title">{firstName} {lastName}</h2>
-             <img className =" w-16 h-16 rounded-full" src={photourl||'https://www.thewowstyle.com/wp-content/uploads/2015/01/nature-images..jpg'}/>
+             <h2 className="card-title">{first_name} {last_name}</h2>
+             <img className =" w-16 h-16 rounded-full" src={photo_url||'https://www.thewowstyle.com/wp-content/uploads/2015/01/nature-images..jpg'}/>
             </div>
              <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
              <div className="card-actions justify-end">
-      <button className="btn btn-primary" onClick={()=>handleReviewRequest('accepted',request._id)}>Accept</button>
+      <button className="btn btn-primary" onClick={()=>handleReviewRequest('accepted',request.id)}>Accept</button>
       <button className="btn btn-error">Deny</button>
     </div>
            </div>

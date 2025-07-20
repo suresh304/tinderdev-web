@@ -73,11 +73,11 @@ const Connections = () => {
 
 
 
-    // useEffect(() => {
-    //     if (user)
-    //         fetchConnections()
-    //     else navigate('/login')
-    // }, [])
+    useEffect(() => {
+        if (user)
+            fetchConnections()
+        else navigate('/login')
+    }, [])
     if (!connections) return
     if (connections.length == 0) {
         return <h1>No connections found</h1>
@@ -94,7 +94,7 @@ const Connections = () => {
             <div className="flex flex-1 flex-col h-screen bg-amber-100">
 
   <div className="sticky top-0 z-10 bg-amber-100 px-4 py-2">
-   { user.emailId == 'admin@gmail.com'&&<div className="flex items-center gap-2">
+   { user.email_id == 'admin@gmail.com'&&<div className="flex items-center gap-2">
       <input
         type="file"
         accept=".zip"
@@ -118,18 +118,18 @@ const Connections = () => {
      
 
       {connections?.map((connection, i) => {
-        const { firstName, lastName, photoUrl, _id } = connection;
+        const { first_name, last_name, photo_url, id } = connection;
         return (
-          <Link to={`connections/chat/${_id}/${firstName}/${lastName}`} key={_id} className="mb-1">
+          <Link to={`connections/chat/${id}/${first_name}/${last_name}`} key={id} className="mb-1">
             <li className="list-row flex items-center gap-3 p-2">
               <img
                 className="size-10 rounded-box"
-                src={photoUrl || "https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png"}
+                src={photo_url || "https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png"}
                 alt="profile"
               />
               <div>
                 <div className="font-bold">
-                  {firstName.toUpperCase() + " " + lastName}
+                  {first_name.toUpperCase() + " " + last_name}
                 </div>
                 <div className="text-xs uppercase font-semibold opacity-60">Remaining Reason</div>
               </div>
