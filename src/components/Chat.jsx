@@ -10,11 +10,13 @@ import Modal from './Modal'
 
 const Chat = () => {
     const { targetUser, first_name: targetUserFirsttName, last_name: targetUserlast_name } = useParams()
+    console.log(targetUser, targetUserFirsttName)
 
     const user = useSelector(store => store.user)
     const userId = user?.id
     const userPhoto = user?.photo_url
     const first_name = user?.first_name
+    const last_name = user?.last_name
     const [message, setMessage] = useState('')
     const [chats, setChats] = useState([])
     const [isTyping, setIsTyping] = useState(false)
@@ -87,21 +89,21 @@ const Chat = () => {
         socket.emit('joinchat', { userId, first_name, targetUser })
 
         socket.on('messagerecieved', ({ sender_id, receiver_id, text, created_at, deletedBy, id }) => {
-            if (userId == recieverId.id)
-                setChats((prev) => [...prev, { senderId, recieverId, text, createdAt }])
+            if (userId == receiver_id)
+                setChats((prev) => [...prev, { sender_id, receiver_id, text, created_at }])
             if (Notification.permission === "granted") {
                 new Notification("New message", {
-                    body: `${senderId.first_name}: ${text}`,
-                    icon: sender_photo_url, // Optional
+                    body: `${first_name}: ${text}`,
+
                 });
             }
-            idsToBeDeleted.push(_id)
-            setIdsToBeDeleted(prev => [...idsToBeDeleted, _id])
+            idsToBeDeleted.push(id)
+            setIdsToBeDeleted(prev => [...idsToBeDeleted, id])
             setIsTyping(false)
 
         })
-        socket.on('typingStatusRecieved', (data, senderId, recieverId) => {
-            if (data.recieverId == userId) {
+        socket.on('typingStatusRecieved', (data, sender_id, reciever_id) => {
+            if (data.reciever_id == userId) {
                 clearTimeout(interval)
                 setIsTyping(true)
                 interval = setTimeout(() => setIsTyping(false), 2000)
@@ -110,6 +112,8 @@ const Chat = () => {
         })
 
         socket.on('messageUpdated', (filteredMessages) => {
+
+            console.log('filtered messages',filteredMessages)
 
             setChats(filteredMessages)
             setModal({
@@ -153,7 +157,19 @@ const Chat = () => {
         const socket = createSocketConnection()
 
         socket.emit('sendmessage', { first_name, userId, targetUser, message })
-        setChats((prev) => [...prev, { senderId: { first_name: "", last_name: "", photo_url: userPhoto, id: userId }, recieverId: { first_name: "", last_name: "", photo_url: "", id: targetUser }, createdAt: new Date().toISOString(), text: message || msg }])
+        setChats((prev) => [...prev, {
+
+            "text": message,
+            "created_at": new Date().toISOString(),
+            "sender_id": userId,
+            "receiver_id": targetUser,
+            "sender_first_name": first_name,
+            "sender_last_name": last_name,
+            "sender_photo_url": "",
+            "receiver_first_name": targetUserFirsttName,
+            "receiver_last_name": targetUserlast_name,
+            "receiver_photo_url": ""
+        }])
 
         setMessage('')
     }
@@ -168,29 +184,34 @@ const Chat = () => {
 
 
     const deleteMessage = async (msgId) => {
+    console.log('Deleting message with ID:', msgId);
+
+    const socket = createSocketConnection(); // Ensure this doesn't recreate socket every time
+
+    try {
         if (!msgId) {
-            setChats(prevChats => prevChats.slice(0, -1));
-            setModal({
-                ...modal,
-                isopen: false,
-
-            })
-
-        }
-        const socket = createSocketConnection()
-        try {
-
-            if (!msgId && idsToBeDeleted.length) {
-                socket.emit('deletingMessage', { msgId: idsToBeDeleted[idsToBeDeleted.length - 1], userId, targetUser })
-                setIdsToBeDeleted(prev => prev.slice(0, -1))
-                return
+            if (idsToBeDeleted.length) {
+                const lastMsgId = idsToBeDeleted[idsToBeDeleted.length - 1];
+                socket.emit('deletingMessage', { msgId: lastMsgId, userId, targetUser });
+                setIdsToBeDeleted(prev => prev.slice(0, -1));
             }
-            socket.emit('deletingMessage', { msgId, userId, targetUser })
 
-        } catch (error) {
-            console.error("This is the error >>>>>>>>>>>>>>>", error.response?.data || error.message);
+            // Optimistically remove last message from chat UI
+            setChats(prev => prev.slice(0, -1));
+
+            // Close the modal
+            setModal(prev => ({ ...prev, isopen: false }));
+            return;
         }
-    };
+
+        // Emit delete for given msgId
+        socket.emit('deletingMessage', { msgId, userId, targetUser });
+
+    } catch (error) {
+        console.error("Error while deleting message:", error?.response?.data || error.message);
+    }
+};
+
 
     return (
         <>

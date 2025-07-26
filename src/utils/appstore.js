@@ -4,6 +4,7 @@ import feedReducer from './feedSlice'
 import connectionReducer from './connectionsSlice'
 import requestReducer from './requestSlice'
 import themesReducer from './themeSlice'
+import postsReducer from './postsSlice'
 
 export const store = configureStore({
   reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
     feed:feedReducer,
     connection:connectionReducer,
     request:requestReducer,
-    themes:themesReducer
+    themes:themesReducer,
+    posts:postsReducer
   },
 })

@@ -10,6 +10,7 @@ import Feed from './components/Feed.jsx'
 import Connections from './components/Connections.jsx'
 import Requests from './components/Requests.jsx'
 import Chat from './components/Chat.jsx'
+import Posts from './components/Posts.jsx'
 
 function App() {
 
@@ -26,7 +27,8 @@ function App() {
         <Route path='/profile' element={<Profile/>}/>
         <Route path='/feed' element={<Feed/>}/>
         <Route path='/requests' element={<Requests/>}/>
-        {/* <Route path='/' element={<Requests/>}/> */}
+        <Route path='/' element={<Posts/>}/>
+        <Route path='/Posts' element={<Posts/>}/>
         <Route path='/connections' element={<Connections/>}>
         <Route path='connections/chat/:targetUser/:first_name?/:last_name?' element={<Chat/>}/>
         </Route>

@@ -6,15 +6,20 @@ import { addFeed } from '../utils/feedSlice'
 import { store } from '../utils/appstore'
 import FeedCard from './FeedCard'
 import NewsCard from './NewsCard'
+import { useNavigate } from 'react-router-dom'
 
 const Feed = () => {
-    const dispactch = useDispatch()
+    const dispatch = useDispatch()
     const feed = useSelector(store => store.feed)
+    const user = useSelector(store=>store.user)
+    const navigate = useNavigate()
     const [newsFeed, setNewsFeed] = useState()
     const [query, setQuery] = useState('spirituality')
+    const [loading,setLoading] = useState(false)
 
 
     const getFeed = async () => {
+        setLoading(true)
         if (feed) {
             return
         }
@@ -22,7 +27,8 @@ const Feed = () => {
         const res = await axios.get(`${BASE_URL}/feed1`, {
             withCredentials: true
         })
-        dispactch(addFeed(res?.data?.data))
+        dispatch(addFeed(res?.data?.data))
+        setLoading(false)
 
     }
 
@@ -72,7 +78,11 @@ const getNewsFeed = async () => {
 
 
     useEffect(() => {
-         
+         if (!user) {
+      navigate('/login')
+      
+      
+    }
 
       const x=  setTimeout(()=>{
         getFeed()
@@ -99,7 +109,7 @@ const getNewsFeed = async () => {
 
     return (
         <>
-            {!feed?.length && <h1 className='text-4xl font-extrabold mx-20'> OOPS No suggestions...</h1>}
+            {!feed?.length && !loading&& <h1 className='text-4xl font-extrabold mx-20'> OOPS No suggestions...</h1>}
 
             <div className='justify-items-center  '>
                 

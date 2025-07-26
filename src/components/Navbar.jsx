@@ -70,6 +70,7 @@ useEffect(() => {
     </select>
       </div>
       <div className="flex gap-2 items-center">
+        <Link to='/Posts' className='btn btn-primary'>Posts</Link>
         <Link to='/connections' className='btn btn-primary'>Connections</Link>
         <Link to='/requests' className='btn btn-primary'>Requests</Link>
         {user && <p className='my-auto mx-5 text-xs uppercase font-semibold'>Welcome <i>{user?.first_name}</i>..!</p>}
