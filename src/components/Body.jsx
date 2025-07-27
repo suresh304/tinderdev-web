@@ -36,7 +36,7 @@ const Body = () => {
       <div className="relative bg-cover bg-center bg-fixed w-full overflow-scroll">
         {/* Fixed Navbar */}
         <div className="fixed top-0 left-0 z-50 w-full">
-          <Navbar />
+          {user&&<Navbar />}
         </div>
 
         {/* Content below navbar with padding-top */}

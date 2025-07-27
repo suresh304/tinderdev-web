@@ -6,6 +6,7 @@ import { BASE_URL } from '../constants'
 import { useNavigate } from 'react-router-dom'
 import Toast from './Toast'
 import { log } from '../utils/helpers'
+import NoResults from './NoResults'
 
 const Requests = () => {
 
@@ -60,7 +61,7 @@ console.log('notfy')
   },[notify])
   if (!requests) return
   if (requests.length == 0) {
-    return <h1>No reqests found</h1>
+    return <NoResults message={"No requests for you !"}/>
   }
 
 

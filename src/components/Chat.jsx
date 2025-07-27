@@ -102,8 +102,10 @@ const Chat = () => {
             setIsTyping(false)
 
         })
-        socket.on('typingStatusRecieved', (data, sender_id, reciever_id) => {
-            if (data.reciever_id == userId) {
+        socket.on('typingStatusRecieved', (data, senderId, recieverId) => {
+            console.log(data)
+            if (data.recieverId == userId) {
+                console.log("enter")
                 clearTimeout(interval)
                 setIsTyping(true)
                 interval = setTimeout(() => setIsTyping(false), 2000)
@@ -113,7 +115,7 @@ const Chat = () => {
 
         socket.on('messageUpdated', (filteredMessages) => {
 
-            console.log('filtered messages',filteredMessages)
+            console.log('filtered messages', filteredMessages)
 
             setChats(filteredMessages)
             setModal({
@@ -184,117 +186,154 @@ const Chat = () => {
 
 
     const deleteMessage = async (msgId) => {
-    console.log('Deleting message with ID:', msgId);
+        console.log('Deleting message with ID:', msgId);
 
-    const socket = createSocketConnection(); // Ensure this doesn't recreate socket every time
+        const socket = createSocketConnection(); // Ensure this doesn't recreate socket every time
 
-    try {
-        if (!msgId) {
-            if (idsToBeDeleted.length) {
-                const lastMsgId = idsToBeDeleted[idsToBeDeleted.length - 1];
-                socket.emit('deletingMessage', { msgId: lastMsgId, userId, targetUser });
-                setIdsToBeDeleted(prev => prev.slice(0, -1));
+        try {
+            if (!msgId) {
+                if (idsToBeDeleted.length) {
+                    const lastMsgId = idsToBeDeleted[idsToBeDeleted.length - 1];
+                    socket.emit('deletingMessage', { msgId: lastMsgId, userId, targetUser });
+                    setIdsToBeDeleted(prev => prev.slice(0, -1));
+                }
+
+                // Optimistically remove last message from chat UI
+                setChats(prev => prev.slice(0, -1));
+
+                // Close the modal
+                setModal(prev => ({ ...prev, isopen: false }));
+                return;
             }
 
-            // Optimistically remove last message from chat UI
-            setChats(prev => prev.slice(0, -1));
+            // Emit delete for given msgId
+            socket.emit('deletingMessage', { msgId, userId, targetUser });
 
-            // Close the modal
-            setModal(prev => ({ ...prev, isopen: false }));
-            return;
+        } catch (error) {
+            console.error("Error while deleting message:", error?.response?.data || error.message);
         }
-
-        // Emit delete for given msgId
-        socket.emit('deletingMessage', { msgId, userId, targetUser });
-
-    } catch (error) {
-        console.error("Error while deleting message:", error?.response?.data || error.message);
-    }
-};
+    };
 
 
     return (
         <>
-            {modal.isopen && <Modal Yes={() => deleteMessage(modal.data.id)} No={() => setModal({ ...modal, isopen: false })} onClose={() => setModal({ ...modal, isopen: false })} />}
-            <div className=" relative w-full   overflow-hidden  h-screen flex flex-col justify-between  bg-cover bg-center bg-fixed pt-[64px]"
-            // style={{ backgroundImage: `url('/${theme}.png')` }}
-            >
-                <div className='w-[25%] flex items-center justify-around rounded-b-lg p-1.5 bg-blue-300 mx-auto'>
-                    <div>{targetUserFirsttName} {targetUserlast_name}</div>
+  {modal.isopen && (
+    <Modal
+      Yes={() => deleteMessage(modal.data.id)}
+      No={() => setModal({ ...modal, isopen: false })}
+      onClose={() => setModal({ ...modal, isopen: false })}
+    />
+  )}
 
+  <div className="w-full h-[90vh] flex flex-col bg-base-100">
+    {/* Chat Header with Bio */}
+    <div className="flex flex-row  justify-center items-center bg-primary text-primary-content py-4 shadow-md">
+        <div className="w-10  mx-5 ring-accent rounded-b-full">
+          <img
+            src={"https://api.dicebear.com/7.x/initials/svg?seed=User"}
+            alt="User"
+          />
+        </div>
+      <h2 className="text-lg font-bold">{targetUserFirsttName} {targetUserlast_name}</h2>
+      
+      {isTyping ? (
+        <div className="flex items-center gap-2 mt-2 text-sm mx-5">
+          <span className="loading loading-bars loading-sm"></span>
+          <span>Typing...</span>
+        </div>
+      ):<p className="text-sm opacity-45 mx-5 italic">Bio: "Exploring the world, one chat at a time."</p>}
+    </div>
 
-                </div>
-                <div className='overflow-scroll' ref={chatContainerRef} >
-
-                    {chats?.map((chat, i) => {
-                        log(chat)
-                        return <div className={chat?.sender_id == userId ? "chat chat-end" : "chat chat-start"} key={i}>
-                            <div className="chat-image avatar pl-5">
-                                <div className="w-10 rounded-full">
-                                    <img
-                                        alt="Chat Profile"
-                                        src={chat.sender_photo_url}
-                                    /> </div>
-                            </div>
-                            <div className="chat-header">
-                                <time className="text-xs opacity-50 text-blue-700 font-bold">{formatTime(chat.created_at)}</time>
-                            </div>
-                            <div className="chat-bubble" onDoubleClick={() =>
-                                setModal({
-                                    ...modal,
-                                    isopen: true,
-                                    data: {
-                                        ...modal.data,
-                                        id: chat.id
-                                    }
-                                })
-                            }>
-
-                                {chat.text.includes('http') ? <a href='chat.text' target='_blank' /> : chat.text}
-
-                            </div>
-                            <div className="chat-footer text-amber-900 opacity-50">Delivered</div>
-                        </div>
-                    })}
-
-                    {isTyping && <div className="chat chat-start">
-                        <div className="chat-image avatar">
-                            <div className="w-10 rounded-full">
-                                <img
-                                    alt="Chat Profile"
-                                /> </div>
-                        </div>
-                        <div className="chat-header">
-                            <time className="text-xs opacity-50 text-amber-800">12:45</time>
-                        </div>
-                        <div className="chat-bubble">
-                            <span className="loading loading-dots loading-sm"></span>
-                        </div>
-                    </div>}
-
-                    <div ref={messagesEndRef} ></div>
-
-
-                </div>
-                <div className='fixed bottom-0  z-50 w-[70%] flex justify-center items-center'>
-                    <input
-                        type="text"
-                        value={message}
-                        // onChange={(e) => {setMessage(e.target.value)}}
-                        onChange={(e) => typing(e)}
-                        onKeyDown={(e) => e.key == "Enter" && sendMessage()}
-                        placeholder="Type here"
-                        class="input input-bordered input-primary w-[70%] my-2" />
-                    <button className="btn btn-info" onClick={() => sendMessage()}>Chat</button>
-
-
-
-
-
-                </div>
-
+    {/* Chat Messages */}
+    <div className="flex-1 overflow-y-auto scrollbar-hide px-4 py-2 space-y-4" ref={chatContainerRef}>
+      {chats?.map((chat, i) => {
+        const isUser = chat?.sender_id == userId;
+        return (
+          <div
+            className={`chat ${isUser ? "chat-end" : "chat-start"}`}
+            key={i}
+          >
+            <div className="chat-image avatar">
+              <div className="w-10 rounded-full ring ring-offset-base-100 ring-primary ring-offset-2">
+                <img
+                  alt="Chat Profile"
+                  src={chat.sender_photo_url}
+                />
+              </div>
             </div>
-        </>
+
+            <div className="chat-header text-sm text-gray-500">
+              <time>{formatTime(chat.created_at)}</time>
+            </div>
+
+            <div
+              className="chat-bubble chat-bubble-info cursor-pointer"
+              onDoubleClick={() =>
+                setModal({
+                  ...modal,
+                  isopen: true,
+                  data: {
+                    ...modal.data,
+                    id: chat.id,
+                  },
+                })
+              }
+            >
+              {chat.text.includes("http") ? (
+                <a
+                  href={chat.text}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-100 underline"
+                >
+                  {chat.text}
+                </a>
+              ) : (
+                chat.text
+              )}
+            </div>
+
+            <div className="chat-footer text-xs text-gray-400">Delivered</div>
+          </div>
+        );
+      })}
+
+      {/* Typing Indicator */}
+      {isTyping && (
+        <div className="chat chat-start">
+          <div className="chat-image avatar">
+            <div className="w-10 rounded-full bg-base-200" />
+          </div>
+          <div className="chat-header text-xs text-gray-400">Typing</div>
+          <div className="chat-bubble chat-bubble-accent">
+            <span className="loading loading-dots loading-sm"></span>
+          </div>
+        </div>
+      )}
+
+      <div ref={messagesEndRef}></div>
+    </div>
+
+    {/* Chat Input Box */}
+    <div className="w-full bg-base-200 p-4 border-t flex justify-center items-center gap-2 shadow-lg">
+      <input
+        type="text"
+        value={message}
+        onChange={(e) => typing(e)}
+        onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+        placeholder="Type your message..."
+        className="input input-bordered input-primary w-[70%] max-w-lg"
+      />
+      <button
+        className="btn btn-info"
+        onClick={() => sendMessage()}
+      >
+        Send
+      </button>
+    </div>
+  </div>
+</>
+
     )
 }
 

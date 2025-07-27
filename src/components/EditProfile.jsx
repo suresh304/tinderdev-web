@@ -7,96 +7,129 @@ import { addUser } from '../utils/userSlice'
 import Toast from './Toast'
 
 const EditProfile = (user) => {
-
   console.log(user);
   
-  // const {first_name,last_name,age,photo_url} = user
-  const [first_name, setfirst_name] = useState(user.first_name)
-  const [last_name, setlast_name] = useState(user.last_name)
+  const [first_name, setFirstName] = useState(user.first_name)
+  const [last_name, setLastName] = useState(user.last_name)
   const [age, setAge] = useState(user.age)
-  const [gender, setGender] = useState()
+  const [photo_url, setPhotoUrl] = useState(user.photo_url || '')
+  const [about, setAbout] = useState(user.about)
   const [error, setError] = useState()
-  const [photo_url, setphoto_url] = useState(user.photo_url || '')
-  const [about,setAbout] = useState(user.about)
-  const dispatch = useDispatch()
-  const [showtoast, setShowtoast] = useState(false)
+  const [showToast, setShowToast] = useState(false)
 
+  const dispatch = useDispatch()
 
   const updateProfileHandler = async () => {
     try {
-      const res = await axios.patch(`${BASE_URL}/profile/edit`, { first_name, last_name, age, photo_url ,about}, { withCredentials: true })
-      dispatch(addUser(res.data))
-      setShowtoast(true)
-      setTimeout(() => { setShowtoast(false) }, 3000)
-      // clearInterval(i)
+      const res = await axios.patch(`${BASE_URL}/profile/edit`, {
+        first_name,
+        last_name,
+        age,
+        photo_url,
+        about,
+      }, { withCredentials: true })
 
-    } catch (error) {
-      setError(error)
-      console.log("error in updating profile", error)
+      dispatch(addUser(res.data))
+      setShowToast(true)
+      setTimeout(() => setShowToast(false), 3000)
+    } catch (err) {
+      setError(err?.response?.data || "Something went wrong")
     }
   }
 
   return (
+    <div className="flex flex-col lg:flex-row justify-center items-start gap-10 p-4 md:p-8">
+      {/* Form Card */}
+      <div className="card w-full max-w-md bg-base-200 shadow-md">
+        <div className="card-body overflow-y-auto scrollbar-hide  max-h-[75vh]">
+          <h2 className="card-title text-center text-2xl">Edit Profile</h2>
 
-
-    <div className='flex justify-center items-center mt-[7%] flex-wrap-reverse'>
-      <div className="card bg-base-200 w-96 h-[60vh] shadow-sm  my-auto ">
-        <div className="card-body items-center text-center overflow-scroll">
-          <h2 className="card-title">Edit Profile</h2>
-          <label className="input validator">
-            <p className=''>first_name</p>
-            <svg className="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g strokeLinejoin="round" strokeLinecap="round" strokeWidth="2.5" fill="none" stroke="currentColor"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></g></svg>
-            <input type="input" required
+          {/* Input Fields */}
+          <div className="form-control">
+            <label className="label font-semibold">First Name</label>
+            <input
+              type="text"
+              className="input input-bordered"
               value={first_name}
-              onChange={(e) => setfirst_name(e.target.value)}
-              placeholder="first_name" pattern="[A-Za-z][A-Za-z0-9\-]*" minlength="3" maxlength="30" title="Only letters, numbers or dash" />
-          </label>
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="First name"
+              required
+            />
+          </div>
 
+          <div className="form-control">
+            <label className="label font-semibold">Last Name</label>
+            <input
+              type="text"
+              className="input input-bordered"
+              value={last_name}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Last name"
+              required
+            />
+          </div>
 
-
-          <label class="input validator">
-            <p className=''>last_name</p>
-
-            <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle></g></svg>
-            <input type="input" required value={last_name}
-              onChange={(e) => setlast_name(e.target.value)}
-
-              placeholder="last_name" minlength="8" title="Must be more than 8 characters, including number, lowercase letter, uppercase letter" />
-          </label>
-          <label class="input validator">
-            <p className=''>age</p>
-
-            <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle></g></svg>
-            <input type="input" required value={age}
+          <div className="form-control">
+            
+            <input
+              type="number"
+              className="input input-bordered"
+              value={age}
               onChange={(e) => setAge(e.target.value)}
+              placeholder="Age"
+              min={1}
+              required
+            />
+          </div>
 
-              placeholder="age" minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}" title="Must be more than 8 characters, including number, lowercase letter, uppercase letter" />
-          </label>
-          <label class="input validator">
-            <p className=''>photo_url</p>
+          <div className="form-control">
+            
+            <input
+              type="url"
+              className="input input-bordered"
+              value={photo_url}
+              onChange={(e) => setPhotoUrl(e.target.value)}
+              placeholder="Photo URL"
+              required
+            />
+          </div>
 
-            <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle></g></svg>
-            <input type="input" required value={photo_url}
-              onChange={(e) => setphoto_url(e.target.value)}
+          <div className="form-control">
+            
+            <textarea
+              className="textarea textarea-bordered resize-none"
+              rows={3}
+              value={about}
+              onChange={(e) => setAbout(e.target.value)}
+              placeholder="Tell us about yourself"
+              required
+            />
+          </div>
 
-              placeholder="photo_url" minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}" title="Must be more than 8 characters, including number, lowercase letter, uppercase letter" />
-          </label>
-          <label class="input validator">
-          <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g stroke-linejoin="round" stroke-linecap="round" stroke-width="2.5" fill="none" stroke="currentColor"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle></g></svg>
-          <input type="input" required value={about}
-            onChange={(e) => setAbout(e.target.value)}
+          {/* Error Message */}
+          {error && (
+            <div className="text-red-500 text-sm mt-2">
+              {error}
+            </div>
+          )}
 
-            placeholder="About" minlength="8" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{5,}" title="Must be more than 8 characters, including number, lowercase letter, uppercase letter" />
-        </label>
-
-          {error && <p>{error}</p>}
-          <button className="btn btn-outline btn-primary w-full" onClick={updateProfileHandler}>Update</button>
-
+          {/* Submit Button */}
+          <button
+            className="btn btn-primary w-full mt-4"
+            onClick={updateProfileHandler}
+          >
+            Update Profile
+          </button>
         </div>
       </div>
 
-      <FeedCard {...{ age, first_name, last_name, gender, photo_url,about }} />
-      {showtoast && <Toast message={"Profile Updated successfully"} />}
+      {/* Profile Preview */}
+      <div className="w-full max-w-sm">
+        <FeedCard {...{ age, first_name, last_name, photo_url, about }} />
+      </div>
+
+      {/* Toast */}
+      {showToast && <Toast message="Profile updated successfully" />}
     </div>
   )
 }

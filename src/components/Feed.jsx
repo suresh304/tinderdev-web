@@ -7,26 +7,30 @@ import { store } from '../utils/appstore'
 import FeedCard from './FeedCard'
 import NewsCard from './NewsCard'
 import { useNavigate } from 'react-router-dom'
+import NoResults from './NoResults'
+import Skeleton from './Skeleton'
 
 const Feed = () => {
     const dispatch = useDispatch()
     const feed = useSelector(store => store.feed)
-    const user = useSelector(store=>store.user)
+    const user = useSelector(store => store.user)
     const navigate = useNavigate()
     const [newsFeed, setNewsFeed] = useState()
     const [query, setQuery] = useState('spirituality')
-    const [loading,setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
 
 
     const getFeed = async () => {
         setLoading(true)
-        if (feed) {
-            return
-        }
+        // if (feed) {
+        //     setLoading(false)
+        //     return
+        // }
 
         const res = await axios.get(`${BASE_URL}/feed1`, {
             withCredentials: true
         })
+        console.log(res?.data?.data)
         dispatch(addFeed(res?.data?.data))
         setLoading(false)
 
@@ -37,10 +41,10 @@ const Feed = () => {
 
     const getNewsFeed1 = async () => {
         try {
-              
 
-            
-            const res = await fetch('http://localhost:3001/news?q='+query, {
+
+
+            const res = await fetch('http://localhost:3001/news?q=' + query, {
                 withCredentials: true,
             });
 
@@ -59,63 +63,64 @@ const Feed = () => {
 
     }
 
-const getNewsFeed = async () => {
-    try {
-        const res = await fetch(BASE_URL+"/news?q="+ query, {
-            withCredentials: true, 
-        });
+    const getNewsFeed = async () => {
+        try {
+            const res = await fetch(BASE_URL + "/news?q=" + query, {
+                withCredentials: true,
+            });
 
-        const data = await res.json();
-        console.log(data);
+            const data = await res.json();
+            console.log(data);
 
-        if (res.ok) {
-            setNewsFeed(data.articles);
+            if (res.ok) {
+                setNewsFeed(data.articles);
+            }
+        } catch (error) {
+            console.log('error while getting news..', error);
         }
-    } catch (error) {
-        console.log('error while getting news..', error);
-    }
-};
+    };
 
 
     useEffect(() => {
-         if (!user) {
-      navigate('/login')
-      
-      
-    }
-
-      const x=  setTimeout(()=>{
-        getFeed()
-
-        getNewsFeed()
-        },500)
+        if (!user) {
+            navigate('/login')
 
 
-       return ()=>clearTimeout(x)
+        }
+
+        const x = setTimeout(() => {
+            getFeed()
+
+            getNewsFeed()
+        }, 500)
+
+
+        return () => clearTimeout(x)
 
     }, [query])
 
     useEffect(() => {
         console.log('render')
-  const delayDebounce = setTimeout(() => {
-    if (query) {
-      getNewsFeed(); // Call your API here
-    }
-  }, 1000); // 500ms delay
+        const delayDebounce = setTimeout(() => {
+            if (query) {
+                getNewsFeed(); // Call your API here
+            }
+        }, 1000); // 500ms delay
 
-  return () => clearTimeout(delayDebounce); // Cleanup on query change
-}, [query]);
+        return () => clearTimeout(delayDebounce); // Cleanup on query change
+    }, [query]);
 
 
     return (
         <>
-            {!feed?.length && !loading&& <h1 className='text-4xl font-extrabold mx-20'> OOPS No suggestions...</h1>}
+            {loading && <Skeleton count={5} />}
+            {!feed?.length && !loading && <NoResults message={"No suggestions found!"} />}
 
             <div className='justify-items-center  '>
-                
+
                 <div className='flex flex-wrap w-[30%] min-w-96'>
 
-                {feed?.map((feed, i) => <FeedCard {...feed} />)}
+                    {feed?.map((feed, i) => <FeedCard {...feed} />)}
                 </div>
 
             </div>
