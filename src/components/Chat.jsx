@@ -170,7 +170,7 @@ const Chat = () => {
             "sender_photo_url": "",
             "receiver_first_name": targetUserFirsttName,
             "receiver_last_name": targetUserlast_name,
-            "receiver_photo_url": ""
+            "receiver_photo_url": "https://api.dicebear.com/7.x/initials/svg?seed=User"
         }])
 
         setMessage('')
