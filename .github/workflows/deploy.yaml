@@ -3,7 +3,7 @@ name: Deploy Frontend to AWS EC2
 on:
   push:
     branches:
-      - main  # Adjust if you want to deploy from a different branch
+      - pgsql  # Adjust if you want to deploy from a different branch
 
 jobs:
   deploy:
