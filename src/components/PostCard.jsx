@@ -148,6 +148,7 @@ const PostCard = (post) => {
     };
 
     const handlePostComment = async () => {
+      console.log(postId)
         if (!text.trim()) return;
         try {
             await axios.post(`${BASE_URL}/comments`, {

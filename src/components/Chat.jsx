@@ -15,6 +15,7 @@ const Chat = () => {
     const user = useSelector(store => store.user)
     const userId = user?.id
     const userPhoto = user?.photo_url
+    console.log("helloooooooo",userPhoto)
     const first_name = user?.first_name
     const last_name = user?.last_name
     const [message, setMessage] = useState('')
@@ -88,9 +89,11 @@ const Chat = () => {
 
         socket.emit('joinchat', { userId, first_name, targetUser })
 
-        socket.on('messagerecieved', ({ sender_id, receiver_id, text, created_at, deletedBy, id }) => {
-            if (userId == receiver_id)
-                setChats((prev) => [...prev, { sender_id, receiver_id, text, created_at }])
+        socket.on('messagerecieved', (enrichedMessage) => {
+          const {receiver,sender,text,created_at,updated_at} = enrichedMessage
+          console.log("on receved",enrichedMessage)
+            if (userId == receiver.id)
+                setChats((prev) => [...prev, { sender_id:sender.id, receiver_id:receiver.id, sender_first_name:sender.first_name,sender_photo_url:sender.photo_url,text, created_at }])
             if (Notification.permission === "granted") {
                 new Notification("New message", {
                     body: `${first_name}: ${text}`,
@@ -167,10 +170,10 @@ const Chat = () => {
             "receiver_id": targetUser,
             "sender_first_name": first_name,
             "sender_last_name": last_name,
-            "sender_photo_url": "",
+            "sender_photo_url": userPhoto ||"https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png",
             "receiver_first_name": targetUserFirsttName,
             "receiver_last_name": targetUserlast_name,
-            "receiver_photo_url": "https://api.dicebear.com/7.x/initials/svg?seed=User"
+            "receiver_photo_url": ""
         }])
 
         setMessage('')
