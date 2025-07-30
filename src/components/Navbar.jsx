@@ -67,20 +67,25 @@ const Navbar = () => {
       </div>
 
       {/* Logo + Theme Selector */}
-      <div className="flex-1">
-        <Link to="/feed" className="btn btn-ghost text-xl">sureChat😍💕</Link>
-        <select
-          value={currTheme}
-          defaultValue={themes[0]}
-          onChange={handleChange}
-          className="btn hidden md:inline-block ml-4"
-        >
-          <option disabled>Theme</option>
-          {themes.map((theme) => (
-            <option value={theme} key={theme}>{theme}</option>
-          ))}
-        </select>
-      </div>
+     <div className="flex flex-col md:flex-row md:items-center gap-2">
+  <Link to="/feed" className="btn btn-ghost text-xl">
+    sureChat😍💕
+  </Link>
+
+  <select
+    value={currTheme}
+    onChange={handleChange}
+    className="btn text-sm"
+  >
+    <option disabled>Theme</option>
+    {themes.map((theme) => (
+      <option value={theme} key={theme}>
+        {theme}
+      </option>
+    ))}
+  </select>
+</div>
+
 
       {/* Desktop Nav Items */}
       <div className="hidden lg:flex gap-3 items-center">
