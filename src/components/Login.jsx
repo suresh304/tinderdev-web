@@ -1,9 +1,10 @@
 import axios from 'axios'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { addUser } from '../utils/userSlice'
 import { useNavigate } from 'react-router-dom'
 import { BASE_URL } from '../constants'
+import Toast from './Toast'
 
 const Login = () => {
   const [email, setEmail] = useState('')
@@ -39,13 +40,28 @@ const Login = () => {
         dispatch(addUser(res.data.user))
         navigate('/profile')
       } else {
+        setError('invalid credentials')
+        setTimeout(() => {
+          setError()
+        }, 1000);
         throw new Error(res.data)
       }
     } catch (error) {
       console.error('Login error:', error)
-      setError(error?.response?.data || 'An error occurred')
+              setError('invalid credentials')
+
     }
   }
+
+  useEffect(() => {
+  if (!error) return; 
+
+  const timeoutId = setTimeout(() => {
+    setError(null);
+  }, 3000); 
+
+  return () => clearTimeout(timeoutId);
+}, [error]);
 
   return (
     <div className="card bg-base-200 w-96 shadow-xl mx-auto mt-24">
@@ -127,6 +143,7 @@ const Login = () => {
           {isLogin ? 'New user? Sign up here' : 'Already have an account? Login here'}
         </p>
       </div>
+      {error&&<Toast message="credentials invalid"/>}
     </div>
   )
 }

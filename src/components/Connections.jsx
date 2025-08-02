@@ -100,7 +100,7 @@ const Connections = () => {
   <div className="flex flex-col flex-1 h-[91vh] bg-base-100 border-r border-base-300 shadow-lg">
 
     {/* Upload Section for Admin */}
-      {user.email_id === 'admin@gmail.com' && (
+      {user?.email_id === 'admin@gmail.com' && (
         <div className="flex items-center gap-3">
           <input
             type="file"

@@ -90,7 +90,7 @@ const Navbar = () => {
       {/* Desktop Nav Items */}
       <div className="hidden lg:flex gap-3 items-center">
         <Link to='/posts' className='btn btn-primary'>Posts</Link>
-        <Link to='/connections' className='btn btn-primary'>Connections</Link>
+        <Link to='/connections' className='btn btn-primary'>Chats</Link>
         <Link to='/requests' className='btn btn-primary'>Requests</Link>
         {user && (
           <p className="text-xs uppercase font-semibold">

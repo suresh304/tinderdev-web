@@ -8,6 +8,8 @@ import { log } from '../utils/helpers'
 import PostCard from './PostCard'
 import { PlusIcon } from 'lucide-react'
 import NewPostDialog from './NewPostDialog'
+import { createSocketConnection } from '../utils/socket'
+import Toast from './Toast'
 
 const Posts = () => {
   const dispatch = useDispatch()
@@ -26,7 +28,27 @@ const Posts = () => {
 
   useEffect(() => {
     getPosts()
-  }, [])
+    
+  const socket = createSocketConnection()
+
+  socket.on("newPostCreated", (post) => {
+    console.log("helo",post)
+    
+      dispatch(addPosts([post, ...posts]));
+    
+  });
+
+  return () => socket.disconnect();
+  }, [posts])
+
+
+
+useEffect(() => {
+
+  
+}, []);
+
+
 
   const handleNewPost = (newPost) => {
     dispatch(addPosts([newPost,...posts]))
