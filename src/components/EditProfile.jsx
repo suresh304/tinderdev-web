@@ -29,6 +29,9 @@ const EditProfile = (user) => {
         about,
       }, { withCredentials: true })
 
+      console.log("added user",res.data);
+      
+
       dispatch(addUser(res.data))
       setShowToast(true)
       setTimeout(() => setShowToast(false), 3000)

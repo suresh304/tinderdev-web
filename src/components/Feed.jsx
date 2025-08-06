@@ -9,6 +9,7 @@ import NewsCard from './NewsCard'
 import { useNavigate } from 'react-router-dom'
 import NoResults from './NoResults'
 import Skeleton from './Skeleton'
+import { debounce } from '../utils/helpers'
 
 const Feed = () => {
     const dispatch = useDispatch()
@@ -105,7 +106,7 @@ const Feed = () => {
             if (query) {
                 getNewsFeed(); // Call your API here
             }
-        }, 1000); // 500ms delay
+        }, 2000); // 500ms delay
 
         return () => clearTimeout(delayDebounce); // Cleanup on query change
     }, [query]);
@@ -124,11 +125,15 @@ const Feed = () => {
                 </div>
 
             </div>
-            {/* <div className='flex justify-center m-10 bg-amber-300'>
+            <div className='flex justify-center m-10 bg-amber-300'>
 
                 <div className='text-2xl font-bold mx-20'> Search for interesting news </div>
-                <input type="text" placeholder="Type key words for news" class="input input-accent" onChange={(e) => setQuery(e.target.value)} />
-                </div> */}
+                <input type="text" placeholder="Type key words for news" class="input input-accent" onChange={(e) => {
+                    // debounce(setQuery(e.target.value))
+                    setQuery(e.target.value)
+
+                    }} />
+                </div>
             <div className='flex justify-center flex-wrap'>
                 {newsFeed?.map((news, i) => (
                     <NewsCard

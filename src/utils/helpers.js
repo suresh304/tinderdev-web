@@ -15,3 +15,15 @@ export const formatTime = (timestamp) =>{
 export const log = (...args) => {
   console.log(new Date().toISOString(), ...args);
 };
+
+
+export const debounce = (fn, delay = 300) => {
+  let timer;
+
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+};
