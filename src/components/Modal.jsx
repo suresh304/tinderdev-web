@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const Modal = ({ onClose,Yes,No }) => {
+const Modal = ({ onClose,Yes,No,id }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-white opacity-90 z-50" onClick={onClose}>
       <div
@@ -8,7 +8,7 @@ const Modal = ({ onClose,Yes,No }) => {
         onClick={(e) => e.stopPropagation()} // Prevent close on clicking inside the modal
       >
         <div className="card-body items-center text-center">
-          <h2 className="card-title">Deleting Message</h2>
+          <h2 className="card-title">Deleting Message {id}</h2>
           <p>Are you sure you want to delete this message?</p>
           <div className="card-actions justify-end w-full mt-4">
             <button className="btn btn-error" onClick={Yes}>Delete</button>

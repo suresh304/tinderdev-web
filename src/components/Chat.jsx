@@ -189,7 +189,8 @@ const Chat = () => {
 
 
     const deleteMessage = async (msgId) => {
-        console.log('Deleting message with ID:', msgId);
+
+        console.log('Deleting message with ID:',modal, msgId);
 
         const socket = createSocketConnection(); // Ensure this doesn't recreate socket every time
 
@@ -197,6 +198,7 @@ const Chat = () => {
             if (!msgId) {
                 if (idsToBeDeleted.length) {
                     const lastMsgId = idsToBeDeleted[idsToBeDeleted.length - 1];
+                    console.log("this is last>>>",lastMsgId)
                     socket.emit('deletingMessage', { msgId: lastMsgId, userId, targetUser });
                     setIdsToBeDeleted(prev => prev.slice(0, -1));
                 }
@@ -225,6 +227,7 @@ const Chat = () => {
       Yes={() => deleteMessage(modal.data.id)}
       No={() => setModal({ ...modal, isopen: false })}
       onClose={() => setModal({ ...modal, isopen: false })}
+      id={modal.data.id}
     />
   )}
 
