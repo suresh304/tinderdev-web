@@ -7,6 +7,8 @@ import { addUser } from '../utils/userSlice';
 import { setTheme } from '../utils/themeSlice';
 import { Menu, LogOut, User, Users } from 'lucide-react';
 import { addPosts } from '../utils/postsSlice';
+import { addFeed } from '../utils/feedSlice';
+import { addRequest } from '../utils/requestSlice';
 
 const Navbar = () => {
   const user = useSelector((store) => store.user);
@@ -19,7 +21,9 @@ const Navbar = () => {
     try {
       await axios.post(`${BASE_URL}/logout`, {}, { withCredentials: true });
       dispatch(addUser(null));
-      dispatch(addPosts([]))
+      dispatch(addPosts([]));
+      dispatch(addFeed([]));
+      dispatch(addRequest([]))
       navigate('/login');
     } catch (error) {
       console.log(error);

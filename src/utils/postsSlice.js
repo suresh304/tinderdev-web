@@ -8,7 +8,7 @@ const postSlice = createSlice({
             return action.payload
         },
         removePosts:(state,action)=>{
-            return state.filter((r)=>r.id!==action.payload)
+            return state.filter((r)=>r.post_id!==action.payload)
         },
     }
 })

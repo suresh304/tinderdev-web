@@ -7,6 +7,9 @@ import { log } from '../utils/helpers';
 
 
 import { Pencil, Reply, Trash } from 'lucide-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { store } from '../utils/appstore';
+import { removePosts } from '../utils/postsSlice';
 
 
 const Comment = ({ comment, replies, postId, onReplySubmit, onRefresh }) => {
@@ -14,6 +17,7 @@ const Comment = ({ comment, replies, postId, onReplySubmit, onRefresh }) => {
   const [showReply, setShowReply] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(comment.content);
+
 
   const handleReply = async () => {
     if (!replyText.trim()) return;
@@ -112,128 +116,162 @@ const Comment = ({ comment, replies, postId, onReplySubmit, onRefresh }) => {
 
 
 const PostCard = (post) => {
-    console.log(post)
-    const { user_id: userId,post_id:postId, author, content, created_at } = post;
-    const [comments, setComments] = useState([]);
-    const [text, setText] = useState('');
-    const [showComments, setShowComments] = useState(false);
+  console.log(post)
+  const { user_id: userId, post_id: postId, author, content, created_at } = post;
+  const [comments, setComments] = useState([]);
+  const [text, setText] = useState('');
+  const [showComments, setShowComments] = useState(false);
+  const dispatch = useDispatch()
+  const user = useSelector(store => store.user)
+  console.log(user)
 
-    const fetchComments = async () => {
-        try {
-            const res = await axios.get(`${BASE_URL}/comments/${postId}`);
-            setComments(buildNestedComments(res.data.comments));
-        } catch (err) {
-            console.error("Error loading comments", err);
-        }
-    };
+  const fetchComments = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/comments/${postId}`);
+      setComments(buildNestedComments(res.data.comments));
+    } catch (err) {
+      console.error("Error loading comments", err);
+    }
+  };
 
-    useEffect(() => {
-        if (showComments) fetchComments();
-    }, [showComments]);
+  useEffect(() => {
+    if (showComments) fetchComments();
+  }, [showComments]);
 
-    const buildNestedComments = (flatComments) => {
-        const map = {};
-        const roots = [];
+  const buildNestedComments = (flatComments) => {
+    const map = {};
+    const roots = [];
 
-        flatComments.forEach(c => (map[c.id] = { ...c, replies: [] }));
-        flatComments.forEach(c => {
-            if (c.parent_comment_id) {
-                map[c.parent_comment_id]?.replies.push(map[c.id]);
-            } else {
-                roots.push(map[c.id]);
-            }
-        });
+    flatComments.forEach(c => (map[c.id] = { ...c, replies: [] }));
+    flatComments.forEach(c => {
+      if (c.parent_comment_id) {
+        map[c.parent_comment_id]?.replies.push(map[c.id]);
+      } else {
+        roots.push(map[c.id]);
+      }
+    });
 
-        return roots;
-    };
+    return roots;
+  };
 
-    const handlePostComment = async () => {
-      console.log(postId)
-        if (!text.trim()) return;
-        try {
-            await axios.post(`${BASE_URL}/comments`, {
-                post_id: postId,
-                content: text,
-            }, { withCredentials: true });
-            setText('');
-            fetchComments();
-        } catch (err) {
-            console.error("Failed to post comment", err);
-        }
-    };
+  const handlePostComment = async () => {
+    console.log(postId)
+    if (!text.trim()) return;
+    try {
+      await axios.post(`${BASE_URL}/comments`, {
+        post_id: postId,
+        content: text,
+      }, { withCredentials: true });
+      setText('');
+      fetchComments();
+    } catch (err) {
+      console.error("Failed to post comment", err);
+    }
+  };
 
-    const handleReplySubmit = async (postId, replyText, parentId) => {
-        try {
-            await axios.post(`${BASE_URL}/comments`, {
-                post_id: postId,
-                content: replyText,
-                parent_comment_id: parentId,
-            }, { withCredentials: true });
-            fetchComments();
-        } catch (err) {
-            console.error("Reply failed", err);
-        }
-    };
+  const handleReplySubmit = async (postId, replyText, parentId) => {
+    try {
+      await axios.post(`${BASE_URL}/comments`, {
+        post_id: postId,
+        content: replyText,
+        parent_comment_id: parentId,
+      }, { withCredentials: true });
+      fetchComments();
+    } catch (err) {
+      console.error("Reply failed", err);
+    }
+  };
 
-    return (
-        <div className="card shadow-md bg-base-100 w-full max-w-xl mx-auto mb-6">
-            <div className="card-body">
-                <div className="flex items-center gap-3 mb-2">
-                    <div className="avatar">
-                        <div className="w-12 rounded-full">
-                            <img src={post.photo_url || 'https://placehold.co/100x100'} alt="User" />
-                        </div>
-                    </div>
-                    <div>
-                        <h2 className="font-semibold text-lg">{author}</h2>
-                        <p className="text-sm text-gray-500">
-                            {moment(created_at).format('MMMM Do YYYY, h:mm A')}
-                        </p>
-                    </div>
-                </div>
 
-                <p className="text-base text-gray-700">{content}</p>
+  const deletePostHandler = async (id) => {
+    // e.preventDefault()
 
-                <div className="mt-4 flex gap-6">
-                    <button className="btn btn-ghost btn-sm flex items-center gap-1 text-red-500">
-                        <Heart size={18} />
-                        <span>{post.likes || 0}</span>
-                    </button>
-                    <button className="btn btn-ghost btn-sm flex items-center gap-1 text-blue-500" onClick={() => setShowComments(prev => !prev)}>
-                        <MessageCircle size={18} />
-                        <span>{comments.length}</span>
-                    </button>
-                </div>
 
-                {showComments && (
-                    <div className="mt-4">
-                        <textarea
-                            className="textarea textarea-bordered w-full"
-                            placeholder="Add a comment..."
-                            value={text}
-                            onChange={(e) => setText(e.target.value)}
-                        />
-                        <button className="btn btn-primary mt-2" onClick={handlePostComment}>
-                            Post Comment
-                        </button>
 
-                        <div className="mt-4">
-                            {comments.map(comment => (
-                                <Comment
-                                    key={comment.id}
-                                    comment={comment}
-                                    replies={comment.replies}
-                                    postId={postId}
-                                    onReplySubmit={handleReplySubmit}
-                                    onRefresh={fetchComments}
-                                />
-                            ))}
-                        </div>
-                    </div>
-                )}
+    try {
+      const res = await axios.delete(`${BASE_URL}/posts`, {
+        data: { id: postId },
+        withCredentials: true
+      })
+      console.log("response>>",res)
+
+      if(res.data.success){
+        console.log("deleted",postId)
+        dispatch(removePosts(postId))
+      }
+
+    } catch (err) {
+      console.error("Failed to create post:", err)
+    }
+  }
+
+
+  return (
+    <div className="card shadow-md bg-base-100 w-full max-w-xl mx-auto mb-6">
+      <div className="card-body">
+        <div className="flex items-center justify-between gap-3 mb-2">
+          <div className="avatar">
+            <div className="w-12 rounded-full">
+              <img src={post.photo_url || 'https://placehold.co/100x100'} alt="User" />
             </div>
+          </div>
+          <div>
+            <h2 className="font-semibold text-lg">{author}</h2>
+            <p className="text-sm text-gray-500">
+              {moment(created_at).format('MMMM Do YYYY, h:mm A')}
+            </p>
+          </div>
+          <div className='ml-auto'>
+
+            {user?.id == userId && <button className="btn  btn-danger btn-sm    text-red-500" onClick={deletePostHandler}>
+              <Trash className='w-4' />
+            </button>}
+          </div>
+
         </div>
-    );
+
+        <p className="text-base text-gray-700">{content}</p>
+
+        <div className="mt-4 flex gap-6">
+          <button className="btn btn-ghost btn-sm flex items-center gap-1 text-red-500">
+            <Heart size={18} />
+            <span>{post.likes || 0}</span>
+          </button>
+          <button className="btn btn-ghost btn-sm flex items-center gap-1 text-blue-500" onClick={() => setShowComments(prev => !prev)}>
+            <MessageCircle size={18} />
+            <span>{comments.length}</span>
+          </button>
+        </div>
+
+        {showComments && (
+          <div className="mt-4">
+            <textarea
+              className="textarea textarea-bordered w-full"
+              placeholder="Add a comment..."
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+            />
+            <button className="btn btn-primary mt-2" onClick={handlePostComment}>
+              Post Comment
+            </button>
+
+            <div className="mt-4">
+              {comments.map(comment => (
+                <Comment
+                  key={comment.id}
+                  comment={comment}
+                  replies={comment.replies}
+                  postId={postId}
+                  onReplySubmit={handleReplySubmit}
+                  onRefresh={fetchComments}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default PostCard;
